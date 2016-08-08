@@ -13,6 +13,7 @@
 require_once("cls_postman.php");
 require_once("cls_apirequest.php");
 require_once("cls_apiresponse.php");
+require_once("lib_lifesaver.php");
 
 $postmaster = new postman();
 $request = $postmaster->getClientRequest();
