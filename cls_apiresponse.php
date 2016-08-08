@@ -18,12 +18,12 @@ class apiResponse
     private $results;
     
     /**
-     * addResult
-     * @param array $result Result from sql query
+     * constructor
+     * @param array $result Result array from sql query
      */
-    public function addResult($result)
+    public function __construct($resultSet)
     {
-        $this->results[] = $result;
+        $this->resultSet = $resultSet;
     }
     
     /**

@@ -15,8 +15,9 @@ require_once("cls_apirequest.php");
 require_once("cls_apiresponse.php");
 
 $postmaster = new postman();
-$request = postmaster->getClientRequest();
-$response = new apiResponse();
+$request = $postmaster->getClientRequest();
+
+$response = new apiResponse(getClosestProfessionals());
 
 $postmaster->sendClientResponse($response);
 
