@@ -12,9 +12,6 @@
  * Creative Commons, PO Box 1866, Mountain View, CA 94042, USA. 
  */
 
-include_once("cls_apirequest.php");
-include_once("cls_apiresponse.php");
- 
 class postman
 {
     private $clientRequest;
