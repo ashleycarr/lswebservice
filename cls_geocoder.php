@@ -36,7 +36,7 @@ class geocoder
         // format address string for url.
         // strip non alpha numeric characters
         $addressString = preg_replace('/[^A-Za-z0-9\-]/', '', $addressString);
-        // replace spaces with a single + character.
+        // replace n spaces with a single + character.
         return(preg_replace('/\s+/', '+', $addressString));
     }
     
@@ -108,9 +108,5 @@ class geocoder
             'longitude' => $gObj['results'][0]['geometry']['location']['lng']));
     }
 }
-
-$googleAPIH = new geocoder("AIzaSyBpN0BcxFtmFKVteFgwsR6w5LQbz3NPioY");
-$coords = $googleAPIH->getCoordinatesOfStreetAddress("321A Huntriss Road Doubleview 6018 WA");
-var_dump($coords);
 
 ?>
