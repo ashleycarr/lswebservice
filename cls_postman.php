@@ -25,8 +25,8 @@ class postman
         if ($this->validRequestHeaders()) {
             $this->clientRequest = trim(file_get_contents("php://input"));
         } else {
-            throw new exception("Unexpected Content-Type in client request: " .
-                                "expected application/json");
+            throw new exception("Unexpected Content-Type in client " .
+                                "equest: expected application/json");
         }
     }
     
@@ -62,19 +62,24 @@ class postman
     
     /**
      * Sends the client the appropriate headers
-     * @param boolean $success True if fetching result set was successful.
+     * @param int $codenum http status code number.
      */
-    private function sendHeaders($success)
+    public function sendHeaders($codeNum)
     {
-        if ($success) {
-            header("HTTP/1.1 200 OK");
-        } else {
-            header("HTTP/1.1 400 Bad Request");
-        }
+        $statusCodes = array (
+            200 => 'OK',
+            400 => 'Bad Request',
+            401 => 'Unauthorized',
+            500 => 'Internal Server Error'
+        );
         
+        header($codeNum . ' ' $statusCodes($codeNum));
+    }
+    
+    public function sendJSONContentTypeHeader()
+    {
         header("Content-Type: application/json");
     }
-
 }
 
 ?>

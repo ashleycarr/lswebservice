@@ -23,17 +23,17 @@ class apiRequest
     public function __construct($code)
     {
         if(!$this->request = json_decode($code)) {
-            throw new exception("Invalid JSON syntax in client request: " .
+            throw new exception("APIRequest: Invalid JSON syntax in client request: " .
                                 json_last_error_msg());
         }
         
         if(!$this->validRequest()) {
-            throw new exception("Invalid client request format recieved.");
+            throw new exception("APIRequest: Invalid client request format recieved.");
         }
         
         if(!$this->validLatitude($this->request['latitude']) ||
            !$this->validLongitude($this->request['Longitude'])) {
-            throw new exception("Invalid client coordinates recieved.");
+            throw new exception("APIRequest: Invalid client coordinates recieved.");
         }
     }
     

@@ -15,11 +15,20 @@ require_once("cls_apirequest.php");
 require_once("cls_apiresponse.php");
 require_once("lib_lifesaver.php");
 
-$postmaster = new postman();
-$request = $postmaster->getClientRequest();
-
-$response = new apiResponse(getClosestProfessionals());
-
-$postmaster->sendClientResponse($response);
+try {
+    $postmaster = new postman();
+    $request = $postmaster->getClientRequest();
+    $request->getRemoteCoordinates();
+    $response = new apiResponse(getClosestProfessionals());
+    $postmaster->sendHeaders(200);
+    $postmaster->sendJSONContentTypeHeader();
+    $postmaster->sendClientResponse($response);
+}
+catch (exception $e)
+{
+    $postmaster->sendHeaders(400);
+    $postmaster->sendJSONContentTypeHeader();
+    echo(json_encode(array('ErrorMessage' => $e->getMessage)));
+}
 
 ?>
