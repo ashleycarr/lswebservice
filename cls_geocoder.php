@@ -28,15 +28,17 @@ class geocoder
     
     
     /**
-     * Formats an address string.  Removes spaces and inserts +s for API.
+     * Formats an address string.  Removes spaces and inserts '+'s for API.
      * @param string $addressString Raw address string.
      */
     private function formatAddressString($addressString)
     {
         // format address string for url.
-        return(str_replace(' ', '+', $addressString));
+        // strip non alpha numeric characters
+        $addressString = preg_replace('/[^A-Za-z0-9\-]/', '', $addressString);
+        // replace spaces with a single + character.
+        return(preg_replace('/\s+/', '+', $addressString));
     }
-    
     
     
     /**
@@ -99,12 +101,16 @@ class geocoder
                                 "Malformed response with no error message.");
         }
     
-        // return the results.
+
         return(array(
             'address'   => $gObj['results'][0]['formatted_address'],
             'latitude'  => $gObj['results'][0]['geometry']['location']['lat'],
             'longitude' => $gObj['results'][0]['geometry']['location']['lng']));
     }
 }
+
+$googleAPIH = new geocoder("AIzaSyBpN0BcxFtmFKVteFgwsR6w5LQbz3NPioY");
+$coords = $googleAPIH->getCoordinatesOfStreetAddress("321A Huntriss Road Doubleview 6018 WA");
+var_dump($coords);
 
 ?>
