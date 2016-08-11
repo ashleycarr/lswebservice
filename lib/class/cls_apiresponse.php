@@ -23,7 +23,7 @@ class apiResponse
      */
     public function __construct($resultSet)
     {
-        $this->resultSet = $resultSet;
+        $this->results = $resultSet;
     }
     
     /**
@@ -32,7 +32,7 @@ class apiResponse
      */
     public function __tostring()
     {
-        json_encode($results);
+        return(json_encode($this->results));
     }
 }
 

@@ -22,7 +22,7 @@ class apiRequest
      */
     public function __construct($code)
     {
-        if(!$this->request = json_decode($code)) {
+        if(!$this->request = json_decode($code, true)) {
             throw new exception("APIRequest: Invalid JSON syntax in client request: " .
                                 json_last_error_msg());
         }
@@ -31,8 +31,8 @@ class apiRequest
             throw new exception("APIRequest: Invalid client request format recieved.");
         }
         
-        if(!$this->validLatitude($this->request['latitude']) ||
-           !$this->validLongitude($this->request['Longitude'])) {
+        if(!$this->validLatitude($this->request['lat']) ||
+           !$this->validLongitude($this->request['lon'])) {
             throw new exception("APIRequest: Invalid client coordinates recieved.");
         }
     }
@@ -45,9 +45,7 @@ class apiRequest
     {
         return(
             isset($this->request['lat']) &&
-            isset($this->request['lon']) &&
-            $this->validLatidude($this->request['lat']) &&
-            $this->validLongitude($this->request['lon'])
+            isset($this->request['lon'])
         );
     }
     
@@ -68,7 +66,7 @@ class apiRequest
      */ 
     private function validLongitude($longitude)
     {
-        return($logitude >= -180 && $longitude <= 180);
+        return($longitude >= -180 && $longitude <= 180);
     }
     
     

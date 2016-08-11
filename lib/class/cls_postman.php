@@ -26,7 +26,7 @@ class postman
             $this->clientRequest = trim(file_get_contents("php://input"));
         } else {
             throw new exception("Unexpected Content-Type in client " .
-                                "equest: expected application/json");
+                                "equest: expected application json");
         }
     }
     
@@ -43,7 +43,7 @@ class postman
      * Sends the client a result set response
      * @param string $reponse json string response set
      */
-    public function sendClientResponse(apiResponse $reponse)
+    public function sendClientResponse(apiResponse $response)
     {
         echo($response);
     }
@@ -66,14 +66,14 @@ class postman
      */
     public function sendHeaders($codeNum)
     {
-        $statusCodes = array (
+        $statusCodes = array(
             200 => 'OK',
             400 => 'Bad Request',
             401 => 'Unauthorized',
             500 => 'Internal Server Error'
         );
         
-        header($codeNum . ' ' $statusCodes($codeNum));
+        header($codeNum . ' ' . $statusCodes[$codeNum]);
     }
     
     public function sendJSONContentTypeHeader()

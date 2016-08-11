@@ -22,10 +22,12 @@ try {
     // fetch client posted request.
     $postmaster = new postman();
     $request = $postmaster->getClientRequest();
-    $request->getRemoteCoordinates();
+    $coords = $request->getRemoteCoordinates();
     
     // generate response
-    $response = new apiResponse(getClosestProfessionals());
+    $response = new apiResponse(
+        getClosestProfessionals($coords[0], $coords[1])
+    );
     $postmaster->sendHeaders(200);
     $postmaster->sendJSONContentTypeHeader();
     $postmaster->sendClientResponse($response);
@@ -33,9 +35,9 @@ try {
 catch (exception $e)
 {
     // on error, send JSON error message
-    $postmaster->sendHeaders(400);
-    $postmaster->sendJSONContentTypeHeader();
-    echo(json_encode(array('ErrorMessage' => $e->getMessage)));
+    header("500 Bad Request");
+    header("Content-Type: application/json");
+    echo(json_encode(array('ErrorMessage' => $e->getMessage())));
 }
 
 ?>
