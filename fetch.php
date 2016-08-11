@@ -27,7 +27,7 @@ try {
     
     // generate response
     $response = new apiResponse(
-        getClosestProfessionals($coords[0], $coords[1])
+        getClosestProfessionals($coords['lat'], $coords['lon'])
     );
     
     // send good headers and response json

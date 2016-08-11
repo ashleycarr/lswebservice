@@ -75,7 +75,8 @@ class apiRequest
      */
     public function getRemoteCoordinates()
     {
-        return(array($this->request["lat"], $this->request["lon"]));
+        return(array('lat' => $this->request['lat'], 
+                     'lon' => $this->request['lon']));
     }
 }
 

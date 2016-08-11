@@ -14,7 +14,7 @@ function getClosestProfessionals($lat, $lon)
               "phone" => "5550155",
               "lat" => -31.8815,
               "lon" => 115.7481),
-        array("name" => "Donnie Dontbesad",
+        array("name" => "Do nnie Dontbesad",
               "address" => "54 Happyness way",
               "phone" => "5550155",
               "lat" => -31.8031,
