@@ -29,6 +29,8 @@ try {
     $response = new apiResponse(
         getClosestProfessionals($coords[0], $coords[1])
     );
+    
+    // send good headers and response json
     $postmaster->sendHeaders(200);
     $postmaster->sendJSONContentTypeHeader();
     $postmaster->sendClientResponse($response);
