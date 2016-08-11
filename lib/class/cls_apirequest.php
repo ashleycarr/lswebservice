@@ -43,10 +43,14 @@ class apiRequest
      */
     private function validRequest()
     {
-        // check request formatting here
-        return(true);
+        return(
+            isset($this->request['lat']) &&
+            isset($this->request['lon']) &&
+            $this->validLatidude($this->request['lat']) &&
+            $this->validLongitude($this->request['lon'])
+        );
     }
-     
+    
     
     /**
      * returns true if $latitude is between +-90 degrees
@@ -64,7 +68,7 @@ class apiRequest
      */ 
     private function validLongitude($longitude)
     {
-        return($logitude >= -180 && $longitude >= 180);
+        return($logitude >= -180 && $longitude <= 180);
     }
     
     
@@ -73,7 +77,7 @@ class apiRequest
      */
     public function getRemoteCoordinates()
     {
-        return(array($this->request["latitude"], $this->request["longitude"]));
+        return(array($this->request["lat"], $this->request["lon"]));
     }
 }
 
