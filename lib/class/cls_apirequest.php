@@ -24,16 +24,16 @@ class apiRequest
     {
         if(!$this->request = json_decode($code, true)) {
             throw new exception("APIRequest: Invalid JSON syntax in client request: " .
-                                json_last_error_msg());
+                                json_last_error_msg(), 400);
         }
         
         if(!$this->validRequest()) {
-            throw new exception("APIRequest: Invalid client request format recieved.");
+            throw new exception("APIRequest: Invalid client request format recieved.", 400);
         }
         
         if(!$this->validLatitude($this->request['lat']) ||
            !$this->validLongitude($this->request['lon'])) {
-            throw new exception("APIRequest: Invalid client coordinates recieved.");
+            throw new exception("APIRequest: Invalid client coordinates recieved.", 400);
         }
     }
     

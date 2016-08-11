@@ -25,7 +25,7 @@ class postman
             $this->clientRequest = trim(file_get_contents("php://input"));
         } else {
             throw new exception("Unexpected Content-Type in client " .
-                                "equest: expected application json");
+                                "equest: expected application json", 400);
         }
         return(new apiRequest($this->clientRequest));
     }

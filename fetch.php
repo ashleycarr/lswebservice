@@ -36,7 +36,7 @@ try {
 catch (exception $e)
 {
     // on error, send JSON error message
-    $postmaster->sendHeaders(400);
+    $postmaster->sendHeaders($e->getCode());
     $postmaster->sendJSONContentTypeHeader();
     echo(json_encode(array('ErrorMessage' => $e->getMessage())));
 }
