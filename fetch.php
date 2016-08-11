@@ -18,9 +18,10 @@ require_once("lib/class/cls_apirequest.php");
 require_once("lib/class/cls_apiresponse.php");
 require_once("lib/lib_lifesaver.php");
 
+$postmaster = new postman();
+
 try {
     // fetch client posted request.
-    $postmaster = new postman();
     $request = $postmaster->getClientRequest();
     $coords = $request->getRemoteCoordinates();
     
@@ -35,8 +36,8 @@ try {
 catch (exception $e)
 {
     // on error, send JSON error message
-    header("500 Bad Request");
-    header("Content-Type: application/json");
+    $postmaster->sendHeaders(400);
+    $postmaster->sendJSONContentTypeHeader();
     echo(json_encode(array('ErrorMessage' => $e->getMessage())));
 }
 

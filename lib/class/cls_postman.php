@@ -17,10 +17,9 @@ class postman
     private $clientRequest;
     
     /**
-     * Constructor
-     * Checks the received headers and stores the raw client request.
+     * Receives the client request and returns an apiRequest object.
      */
-    public function __construct()
+    public function getClientRequest()
     {
         if ($this->validRequestHeaders()) {
             $this->clientRequest = trim(file_get_contents("php://input"));
@@ -28,13 +27,6 @@ class postman
             throw new exception("Unexpected Content-Type in client " .
                                 "equest: expected application json");
         }
-    }
-    
-    /**
-     * Receives the client request and returns an apiRequest object.
-     */
-    public function getClientRequest()
-    {
         return(new apiRequest($this->clientRequest));
     }
     
