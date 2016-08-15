@@ -24,7 +24,7 @@ class apiRequest
     {
         if(!$this->request = json_decode($code, true)) {
             throw new exception("APIRequest: Invalid JSON syntax in client request: " .
-                                json_last_error_msg(), 400);
+                                json_last_error_msg() . strlen($code), 400);
         }
         
         if(!$this->validRequest()) {
@@ -45,7 +45,8 @@ class apiRequest
     {
         return(
             isset($this->request['lat']) &&
-            isset($this->request['lon'])
+            isset($this->request['lon']) &&
+            isset($this->request['numResults'])
         );
     }
     
@@ -73,10 +74,11 @@ class apiRequest
     /**
      * returns the coordinates of the client.
      */
-    public function getRemoteCoordinates()
+    public function getRequest()
     {
         return(array('lat' => $this->request['lat'], 
-                     'lon' => $this->request['lon']));
+                     'lon' => $this->request['lon'],
+                     'numResults' => $this->request['numResults']));
     }
 }
 
