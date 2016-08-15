@@ -74,7 +74,7 @@ class apiRequest
     /**
      * returns the coordinates of the client.
      */
-    public function getRequest()
+    public function getRequestParameters()
     {
         return(array('lat' => $this->request['lat'], 
                      'lon' => $this->request['lon'],

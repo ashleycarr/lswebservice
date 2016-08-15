@@ -24,11 +24,12 @@ $postmaster = new postman();
 try {
     // fetch client posted request.
     $request = $postmaster->getClientRequest();
-    $req = $request->getRequest();
+    $parameters = $request->getRequestParameters();
     
     // generate response
     $response = new apiResponse(
-        getClosestProfessionals($req['lat'], $req['lon'], $req['numResults'])
+        getClosestProfessionals(
+            $parameters['lat'], $parameters['lon'], $parameters['numResults'])
     );
     
     // send good headers and response json
