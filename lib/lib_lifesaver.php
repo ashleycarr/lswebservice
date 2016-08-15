@@ -31,16 +31,24 @@ function haversine($lat1, $lon1, $lat2, $lon2)
     $c = 2 * asin(sqrt($a));
     
     return($earthRadius * $c);
-
 }
 
 function getClosestProfessionals($lat, $lon)
 {
     $dbh = localDBConnect();
     // 2d approximation for faster lookup.
-    $query = "SELECT name, address, phone, email, latitude, longitude, " .
-        "(ABS($lat - latitude) + ABS($lon - longitude)) as dist " .
-        "FROM `healthcare_agents` ORDER BY dist LIMIT 5";
+    $query = "
+        SELECT name, address, phone, email, latitude, longitude,
+        6372.8 * 2 * ASIN(SQRT(POWER(
+        SIN(($lat - latitude) * pi()/180 / 2), 2) + 
+        COS($lat * pi()/180) * COS(latitude * pi()/ 180) * 
+        POWER(SIN(($lon - longitude) * pi() /180 / 2), 2) )) as dist 
+        FROM `healthcare_agents` 
+        WHERE latitude 
+            BETWEEN $lat - 0.5 AND $lat + 0.5 AND 
+        longitude 
+            BETWEEN $lon - 0.5 AND $lon + 0.5 
+        ORDER BY dist LIMIT 5";
     
     $results = $dbh->query($query);
     
@@ -51,7 +59,7 @@ function getClosestProfessionals($lat, $lon)
             'address' => $row['address'],
             'phone' => $row['phone'],
             'email' => $row['email'],
-            'dist' => haversine($lat, $lon, $row['latitude'], $row['longitude'])
+            'dist' => $row['dist']
         );
     }
     return($resultArray);
