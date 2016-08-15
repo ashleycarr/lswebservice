@@ -15,7 +15,7 @@ function getClosestProfessionals($lat, $lon)
     // 2d approximation for faster lookup.
     $query = "
         SELECT name, address, phone, email, latitude, longitude,
-        6372.8 * 2 * ASIN(SQRT(POWER(
+        6372800 * 2 * ASIN(SQRT(POWER(
         SIN(($lat - latitude) * pi()/180 / 2), 2) + 
         COS($lat * pi()/180) * COS(latitude * pi()/ 180) * 
         POWER(SIN(($lon - longitude) * pi() /180 / 2), 2) )) as dist 
