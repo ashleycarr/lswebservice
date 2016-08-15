@@ -34,8 +34,8 @@ if($action == 'add')
     $address = 
         $_POST['addr1'] . " " .
         $_POST['addr2'] . " " .
-        $_POST['pcode'] . " " .
-        $_POST['state'];
+        $_POST['state'] . " " .
+        $_POST['pcode'];
     
     $location = $geocoder->getCoordinatesOfStreetAddress($address);
 
