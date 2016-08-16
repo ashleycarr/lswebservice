@@ -5,6 +5,8 @@
  * 
  * Called by client to fetch a list of health care professionals in proximity
  * to the user's location.
+ * 
+ * Written by Ashley Carr (21591371@student.uwa.edu.au)
  *
  * This work is licensed under the Creative Commons Attribution-NonCommercial 
  * 4.0 International License.

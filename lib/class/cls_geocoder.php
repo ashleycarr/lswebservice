@@ -2,8 +2,11 @@
 
 /**
  * cls_geocoder.php
+ * 
  * This class handles conversion of a street address to latitude and longidue
  * coordinates via the Google Maps Geocoding API.
+ * 
+ * Written by Ashley Carr (21591371@student.uwa.edu.au)
  *
  * This work is licensed under the Creative Commons Attribution-NonCommercial 
  * 4.0 International License.

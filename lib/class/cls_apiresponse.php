@@ -2,8 +2,11 @@
 
 /**
  * cls_apiresponse.php
+ * 
  * This class contains methods for storing and encoding results in an api 
- * response for the client. 
+ * response for the client.
+ * 
+ * Written by Ashley Carr (21591371@student.uwa.edu.au)
  *
  * This work is licensed under the Creative Commons Attribution-NonCommercial 
  * 4.0 International License.

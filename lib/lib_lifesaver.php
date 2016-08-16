@@ -4,6 +4,8 @@
  * lib_lifesaver.php
  * 
  * Library of functions used by the lifesaver web service.
+ * 
+ * Written by Ashley Carr (21591371@student.uwa.edu.au)
  *
  * This work is licensed under the Creative Commons Attribution-NonCommercial 
  * 4.0 International License.

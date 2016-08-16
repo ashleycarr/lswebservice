@@ -2,7 +2,10 @@
 
 /**
  * cls_apirequest.php
+ * 
  * This class handles and verifies JSON formatted requests from the client.
+ * 
+ * Written by Ashley Carr (21591371@student.uwa.edu.au)
  * 
  * This work is licensed under the Creative Commons Attribution-NonCommercial 
  * 4.0 International License.
@@ -28,12 +31,16 @@ class apiRequest
         }
         
         if(!$this->validRequest()) {
-            throw new exception("APIRequest: Invalid client request format recieved.", 400);
+            throw new exception("APIRequest: Invalid client request format.", 400);
         }
         
         if(!$this->validLatitude($this->request['lat']) ||
            !$this->validLongitude($this->request['lon'])) {
-            throw new exception("APIRequest: Invalid client coordinates recieved.", 400);
+            throw new exception("APIRequest: Invalid client coordinates.", 400);
+        }
+        
+        if(!$this->validNumResults($this->request['numResults'])) {
+            throw new exception("APIRequest: Invalid number of results requested.", 400);
         }
     }
     
@@ -45,8 +52,11 @@ class apiRequest
     {
         return(
             isset($this->request['lat']) &&
+            is_numeric($this->request['lat']) &&
             isset($this->request['lon']) &&
-            isset($this->request['numResults'])
+            is_numeric($this->request['lon']) &&
+            isset($this->request['numResults']) &&
+            is_numeric($this->request['numResults'])
         );
     }
     
@@ -68,6 +78,15 @@ class apiRequest
     private function validLongitude($longitude)
     {
         return($longitude >= -180 && $longitude <= 180);
+    }
+    
+    /**
+     * returns true if requested number of results are in acceptable range
+     * @param integer $numResults number of results requested.
+     */
+    private function validNumResults($numResults)
+    {
+        return($numResults > 0 && $numResults <= MAX_RESULTS);
     }
     
     

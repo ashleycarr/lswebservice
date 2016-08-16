@@ -2,7 +2,10 @@
 
 /**
  * cls_postman.php
+ * 
  * This class handles sending and receiving of API requests and responses.
+ * 
+ * Written by Ashley Carr (21591371@student.uwa.edu.au)
  *
  * This work is licensed under the Creative Commons Attribution-NonCommercial 
  * 4.0 International License.
