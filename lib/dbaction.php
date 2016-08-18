@@ -19,6 +19,8 @@ require_once("lib_lifesaver.php");
 if($_GET["action"] == 'add')
 {
     try {
+        
+        // fetch latitude and longitude for address
         $geocoder = new geocoder(GOOGLE_GEOAPIKEY);
         $geocoder->setRegion("au");
 
@@ -28,10 +30,12 @@ if($_GET["action"] == 'add')
             $_POST['state'] . " " .
             $_POST['pcode'];
 
-        $phone = preg_replace('/[^0-9\,\-]/', '', $_POST['phone']);
-
         $location = $geocoder->getCoordinatesOfStreetAddress($address);
 
+        // remove phone number formatting
+        $phone = preg_replace('/[^0-9\,\-]/', '', $_POST['phone']);
+
+        // insert into db
         $dbh = localDBConnect();
         $sth = $dbh->prepare('
             INSERT INTO `healthcare_agents`
@@ -41,12 +45,14 @@ if($_GET["action"] == 'add')
                 :latitude, :longitude)');
 
         $sth->execute(
-            array(':name' => $_POST['name'],
+            array(
+                ':name' => $_POST['name'],
                 ':address' => $address,
                 ':phone' => $phone,
                 ':email' => $_POST['email'],
                 ':latitude' => $location['latitude'],
-                ':longitude' => $location['longitude']));
+                ':longitude' => $location['longitude']
+            ));
     }
     catch (exception $e) {
         echo($e->getMessage());
