@@ -11,7 +11,7 @@ CREATE TABLE `healthcare_agents` (
   `longitude` FLOAT(10, 6) NOT NULL ,
   PRIMARY KEY (`id`)
 ) ENGINE=MYISAM;
-
+    
 CREATE FUNCTION `haversine`(
     `userLat` FLOAT(10, 6), 
     `userLon` FLOAT(10, 6), 
@@ -23,4 +23,4 @@ RETURNS float(10, 6)
 RETURN 6372800 * 2 * ASIN(SQRT(POWER(
     SIN((userLat - destLat) * pi()/180 / 2), 2) + 
     COS(userLat * pi()/180) * COS(destLat * pi()/ 180) * 
-    POWER(SIN((userLon - destLon) * pi() /180 / 2), 2)))
+    POWER(SIN((userLon - destLon) * pi() /180 / 2), 2)));

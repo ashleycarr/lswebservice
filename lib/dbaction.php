@@ -14,57 +14,53 @@
 
 require_once("../settings.php");
 require_once("class/cls_geocoder.php");
+require_once("lib_lifesaver.php");
 
-function localDBConnect()
+if($_GET["action"] == 'add')
 {
-    return new PDO(
-        'mysql:host=localhost;dbname=' . LOCALDB_DBNAME,
-        LOCALDB_USERNAME,
-        LOCALDB_PASSWORD
-    );
-}
+    try {
+        $geocoder = new geocoder(GOOGLE_GEOAPIKEY);
+        $geocoder->setRegion("au");
 
-$action = $_GET["action"];
+        $address = 
+            $_POST['addr1'] . " " .
+            $_POST['addr2'] . " " .
+            $_POST['state'] . " " .
+            $_POST['pcode'];
 
-if($action == 'add')
-{
-    $query = "INSERT INTO `healthcare_agents` (`id`, `name`, `address`, `phone`, " .
-             "`email`, `latitude`, `longitude`) VALUES (";
-    
-    $geocoder = new geocoder(GOOGLE_GEOAPIKEY);
-    $geocoder->setRegion("au");
-    
-    $address = 
-        $_POST['addr1'] . " " .
-        $_POST['addr2'] . " " .
-        $_POST['pcode'] . " " .
-        $_POST['state'];
-    
-    $location = $geocoder->getCoordinatesOfStreetAddress($address);
+        $phone = preg_replace('/[^0-9\,\-]/', '', $_POST['phone']);
 
-    $query = "INSERT INTO `healthcare_agents` VALUES (NULL, '" .
-        $_POST['name'] . "', '" .
-        $address . "', '" .
-        preg_replace('/[^0-9\,\-]/', '', $_POST['phone']) . "', '" .
-        $_POST['email'] . "', " .
-        $location['latitude'] . ", " .
-        $location['longitude'] . ");";
-    
-    echo $query;
-    
-    $dbh = localDBConnect();
-    $dbh->exec($query);
-    
+        $location = $geocoder->getCoordinatesOfStreetAddress($address);
+
+        $dbh = localDBConnect();
+        $sth = $dbh->prepare('
+            INSERT INTO `healthcare_agents`
+                (`id`, `name`, `address`, `phone`, `email`, 
+                `latitude`, `longitude`)
+                VALUES (NULL, :name, :address, :phone, :email, 
+                :latitude, :longitude)');
+
+        $sth->execute(
+            array(':name' => $_POST['name'],
+                ':address' => $address,
+                ':phone' => $phone,
+                ':email' => $_POST['email'],
+                ':latitude' => $location['latitude'],
+                ':longitude' => $location['longitude']));
+    }
+    catch (exception $e) {
+        echo($e->getMessage());
+    }
     exit;
 }
 
-if($action == 'update')
+if($_GET["action"] == 'update')
 {
     
     exit;
 }
 
-if($action == 'delete')
+if($_GET["action"] == 'delete')
 {
     exit;
 }
