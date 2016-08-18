@@ -14,6 +14,9 @@
  * http://creativecommons.org/licenses/by-nc/4.0/ or send a letter to
  * Creative Commons, PO Box 1866, Mountain View, CA 94042, USA. */ 
 
+/**
+ * creates a new PDO object to the local DB
+ */
 function localDBConnect()
 {
     $dbh = new PDO(
@@ -26,6 +29,13 @@ function localDBConnect()
     return($dbh);
 }
 
+
+/**
+ * returns an assoc array of the closest professionals to the user
+ * @param float $lat        Latitiude of user
+ * @param float $lon        Longitude of user
+ * @param integer $maxResults maximum number of results to return
+ */
 function getClosestProfessionals($lat, $lon, $maxResults)
 {
     $dbh = localDBConnect();
