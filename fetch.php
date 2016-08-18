@@ -25,6 +25,7 @@ $postmaster = new postman();
 
 try {
     // fetch client posted request.
+    $postmaster->setExpectedHeaders(array("Content-Type" => "application/json"));
     $request = $postmaster->getClientRequest();
     $parameters = $request->getRequestParameters();
     

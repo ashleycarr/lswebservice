@@ -16,43 +16,60 @@
 
 function localDBConnect()
 {
-    return new PDO(
+    $dbh = new PDO(
         'mysql:host=localhost;dbname=' . LOCALDB_DBNAME,
         LOCALDB_USERNAME,
         LOCALDB_PASSWORD
     );
+    
+    $dbh->setAttribute(PDO::ATTR_EMULATE_PREPARES, FALSE);
+    return($dbh);
 }
 
-function getClosestProfessionals($lat, $lon, $numResults)
+function getClosestProfessionals($lat, $lon, $maxResults)
 {
     $dbh = localDBConnect();
     
-    $boundRange = 0.5;
-    $foundResults = false;
+    //  Approximately 18km
+    $boundRange = 0.3;
     
-    while(!$foundResults) {
-        $query = "
-            SELECT name, address, phone, email, latitude, longitude,
-            6372800 * 2 * ASIN(SQRT(POWER(
-            SIN(($lat - latitude) * pi()/180 / 2), 2) + 
-            COS($lat * pi()/180) * COS(latitude * pi()/ 180) * 
-            POWER(SIN(($lon - longitude) * pi() /180 / 2), 2) )) as dist 
-            FROM `healthcare_agents` 
-            WHERE latitude 
-                BETWEEN $lat - $boundRange AND $lat + $boundRange AND 
-            longitude 
-                BETWEEN $lon - $boundRange AND $lon + $boundRange 
-            ORDER BY dist ASC LIMIT $numResults;";
-
-        $results = $dbh->query($query);
-        if($results->rowCount() > 0) {
-            $foundResults = true;
+    $sth = $dbh->prepare('
+        SELECT name, address, phone, email, latitude, longitude,
+        haversine(:userLat, :userLon, latitude, longitude) as dist 
+        FROM `healthcare_agents` 
+        WHERE 
+        latitude 
+            BETWEEN :latLowerBound AND :latUpperBound
+        AND longitude 
+            BETWEEN :lonLowerBound AND :lonUpperBound
+        ORDER BY dist ASC LIMIT :maxResults;
+    ');
+    
+    while(true) {
+        $sth->execute(array(
+            ':userLat' => $lat,
+            ':userLon' => $lon,
+            ':latLowerBound' => $lat - $boundRange,
+            ':latUpperBound' => $lat + $boundRange,
+            ':lonLowerBound' => $lon - $boundRange,
+            ':lonUpperBound' => $lon + $boundRange,
+            ':maxResults' => $maxResults
+        ));
+        
+        // break if search has returned enough results
+        if($sth->rowCount() > 0) {
+            break;
         }
         
-        $boundRange *= 4;
+        if($boundRange >= 9) {
+            throw new exception("Search: Unable to find professionals within 1000kms of user.", 400);
+        }
+        
+        // increase search area.
+        $boundRange *= 5;
     }
-
-    foreach($results as $row)
+    
+    foreach($sth as $row)
     {
         $resultArray[] = array(
             'name' => $row['name'],

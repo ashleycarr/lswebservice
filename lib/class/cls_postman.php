@@ -17,20 +17,15 @@
 
 class postman
 {
-    private $clientRequest;
+    private $expectedHeaders;
     
     /**
-     * Receives the client request and returns an apiRequest object.
+     * Receives the client post request and returns an apiRequest object.
      */
     public function getClientRequest()
     {
-        if ($this->validRequestHeaders()) {
-            $this->clientRequest = trim(file_get_contents("php://input"));
-        } else {
-            throw new exception("Unexpected Content-Type in client " .
-                                "equest: expected application json", 400);
-        }
-        return(new apiRequest($this->clientRequest));
+        $this->validateRequestHeaders();
+        return(new apiRequest(trim(file_get_contents("php://input"))));
     }
     
     
@@ -45,13 +40,28 @@ class postman
     
     
     /**
-     * Returns true if the request headers are valid
+     * Sets the headers that are required for the client transaction
+     * @param array $headerVals Assoc array of required headers
      */
-    private function validRequestHeaders()
+    public function setExpectedHeaders($headerVals)
+    {
+        $this->expectedHeaders = $headerVals;
+    }
+    
+    
+    /**
+     * Validates the request headers against the expected header values
+     */
+    private function validateRequestHeaders()
     {
         $headers = apache_request_headers();
-        return(isset($headers['Content-Type']) &&
-            $headers['Content-Type'] == 'application/json');
+        foreach($this->expectedHeaders as $key => $value) {
+            if(!isset($headers[$key]) ||
+                $headers[$key] != $value) {
+                throw new exception("Unexpected $key in client " .
+                                "request: expected $value", 400);
+            }
+        }
     }
     
     
@@ -70,6 +80,7 @@ class postman
         
         header($codeNum . ' ' . $statusCodes[$codeNum]);
     }
+    
     
     public function sendJSONContentTypeHeader()
     {
