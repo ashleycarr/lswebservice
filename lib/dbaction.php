@@ -31,6 +31,8 @@ if($_GET["action"] == 'add')
             $_POST['pcode'];
 
         $location = $geocoder->getCoordinatesOfStreetAddress($address);
+        
+        var_dump($location);
 
         // remove phone number formatting
         $phone = preg_replace('/[^0-9\,\-]/', '', $_POST['phone']);
@@ -39,19 +41,27 @@ if($_GET["action"] == 'add')
         $dbh = localDBConnect();
         $sth = $dbh->prepare('
             INSERT INTO `healthcare_agents`
-                (`id`, `name`, `address`, `phone`, `email`, 
-                `latitude`, `longitude`)
-                VALUES (NULL, :name, :address, :phone, :email, 
-                :latitude, :longitude)');
+                (`id`, `name`, `address`, `phone`, `email`)
+                VALUES (NULL, :name, :address, :phone, :email)');
 
         $sth->execute(
             array(
                 ':name' => $_POST['name'],
                 ':address' => $address,
                 ':phone' => $phone,
-                ':email' => $_POST['email'],
-                ':latitude' => $location['latitude'],
-                ':longitude' => $location['longitude']
+                ':email' => $_POST['email']
+            ));
+
+        $sth = $dbh->prepare('
+            INSERT INTO `healthcare_locations`
+                (parentid, location)
+                VALUES (:id, POINT(:longitude, :latitude))');
+
+        $sth->execute(
+            array(
+                ':id' => $dbh->lastInsertId(),
+                ':longitude' => $location['longitude'],
+                ':latitude' => $location['latitude']
             ));
     }
     catch (exception $e) {

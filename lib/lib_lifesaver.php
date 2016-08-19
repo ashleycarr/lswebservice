@@ -40,38 +40,42 @@ function getClosestProfessionals($lat, $lon, $maxResults)
 {
     $dbh = localDBConnect();
     
-    //  Approximately 18km
-    $boundRange = 0.3;
-    
-    $sth = $dbh->prepare('
-        SELECT name, address, phone, email, latitude, longitude,
-        haversine(:userLat, :userLon, latitude, longitude) as dist 
-        FROM `healthcare_agents` 
-        WHERE 
-        latitude 
-            BETWEEN :latLowerBound AND :latUpperBound
-        AND longitude 
-            BETWEEN :lonLowerBound AND :lonUpperBound
-        ORDER BY dist ASC LIMIT :maxResults;
-    ');
+    //  Approximately a 5 square kilometer search area
+    $boundRange = 0.05;
     
     while(true) {
-        $sth->execute(array(
-            ':userLat' => $lat,
-            ':userLon' => $lon,
-            ':latLowerBound' => $lat - $boundRange,
-            ':latUpperBound' => $lat + $boundRange,
-            ':lonLowerBound' => $lon - $boundRange,
-            ':lonUpperBound' => $lon + $boundRange,
-            ':maxResults' => $maxResults
-        ));
+        // generate coords for a search polygon around user location
+        $searchBounds =
+            ($lon - $boundRange) . ' ' . // upper left
+            ($lat + $boundRange) . ', ' .
+            ($lon + $boundRange) . ' ' . // upper right
+            ($lat + $boundRange) . ', ' . 
+            ($lon + $boundRange) . ' ' . // lower right
+            ($lat - $boundRange) . ', ' .
+            ($lon - $boundRange) . ' ' . // lower left
+            ($lat - $boundRange) . ', ' .
+            ($lon - $boundRange) . ' ' . // upper left
+            ($lat + $boundRange);
         
+        $sth = $dbh->query("
+            SELECT a.name AS name, a.address AS address, 
+            a.phone AS phone, a.email AS email, 
+            ST_Y(l.location) AS latitude, ST_X(l.location) AS longitude,
+            HAVERSINE($lat, $lon, ST_Y(l.location), ST_X(l.location)) AS dist
+            FROM `healthcare_locations` AS l
+            INNER JOIN `healthcare_agents` AS a
+                ON l.parentid = a.id
+            WHERE 
+                ST_WITHIN(location, ST_GeomFromText(\"POLYGON(($searchBounds))\"))
+            ORDER BY dist ASC LIMIT $maxResults;
+        ");
+
         // break if search has returned enough results
         if($sth->rowCount() > 0) {
             break;
         }
         
-        if($boundRange >= 9) {
+        if($boundRange > 9) {
             throw new exception("Search: Unable to find professionals within 1000kms of user.", 400);
         }
         

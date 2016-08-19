@@ -10,14 +10,26 @@ CREATE TABLE `healthcare_agents` (
   `latitude` FLOAT(10, 6) NOT NULL ,
   `longitude` FLOAT(10, 6) NOT NULL ,
   PRIMARY KEY (`id`)
-) ENGINE=MYISAM;
-    
-CREATE FUNCTION `haversine`(
+) ENGINE=MyISAM;
+
+CREATE TABLE `healthcare_locations` (
+    parentid INT,
+    location POINT NOT NULL,
+    INDEX (parent_id),
+    SPATIAL INDEX (location),
+    FOREIGN KEY (parent_id) 
+        REFERENCES parent(id)
+        ON DELETE CASCADE
+) ENGINE=MyISAM;
+
+
+
+CREATE FUNCTION `HAVERSINE`(
     `userLat` FLOAT(10, 6), 
     `userLon` FLOAT(10, 6), 
     `destLat` FLOAT(10, 6), 
     `destLon` FLOAT(10, 6))
-RETURNS float(10, 6)
+RETURNS float(15, 6)
     NO SQL
     COMMENT 'Haversine Formula'
 RETURN 6372800 * 2 * ASIN(SQRT(POWER(
