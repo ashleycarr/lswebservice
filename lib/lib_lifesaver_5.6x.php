@@ -4,6 +4,7 @@
  * lib_lifesaver.php
  * 
  * Library of functions used by the lifesaver web service.
+ * This file is designed to use functions available in MySQL version 5.6+
  * 
  * Written by Ashley Carr (21591371@student.uwa.edu.au)
  *

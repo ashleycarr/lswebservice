@@ -18,7 +18,7 @@
 require_once("lib/class/cls_postman.php");
 require_once("lib/class/cls_apirequest.php");
 require_once("lib/class/cls_apiresponse.php");
-require_once("lib/lib_lifesaver.php");
+require_once("lib/lib_lifesaver_5.6x.php");
 require_once("settings.php");
 
 $postmaster = new postman();

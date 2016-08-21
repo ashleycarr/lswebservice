@@ -14,7 +14,7 @@
 
 require_once("../settings.php");
 require_once("class/cls_geocoder.php");
-require_once("lib_lifesaver.php");
+require_once("lib_lifesaver_5.6x.php");
 
 if($_GET["action"] == 'add')
 {

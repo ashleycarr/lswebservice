@@ -1,6 +1,7 @@
 CREATE DATABASE 'lifesaver_db';
 USE 'lifesaver_db';
 
+# Holds contact information of the healthcare agents
 CREATE TABLE `healthcare_agents` (
   `id` INT AUTO_INCREMENT,
   `name` VARCHAR(128) DEFAULT NULL,
@@ -12,6 +13,7 @@ CREATE TABLE `healthcare_agents` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM;
 
+# Holds indexed latitude and longitudes for each agent
 CREATE TABLE `healthcare_locations` (
     parentid INT,
     location POINT NOT NULL,
@@ -22,8 +24,7 @@ CREATE TABLE `healthcare_locations` (
         ON DELETE CASCADE
 ) ENGINE=MyISAM;
 
-
-
+# Used for MySQL version 5.6x for distance calculations
 CREATE FUNCTION `HAVERSINE`(
     `userLat` FLOAT(10, 6), 
     `userLon` FLOAT(10, 6), 
