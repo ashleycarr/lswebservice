@@ -3,7 +3,14 @@
 /**
  * lib_lifesaver.php
  * 
- * Library of functions used by the lifesaver web service.
+ * Library of functions used by the lifesaver web service
+ * This file is designed to use functions available in MySQL version 5.7+
+ * 
+ * At the moment, this is roughly the same speed as the 5.6+ version, however
+ * as MySQL 5.7x becomes a production reccomendation and the PostGIS functions
+ * are optimised further, it should become faster.  Also, the ability to use
+ * prepared statements in this version speeds up the multiple queries should
+ * there be no hits within the first 5km search box.
  * 
  * Written by Ashley Carr (21591371@student.uwa.edu.au)
  *
