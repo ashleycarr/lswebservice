@@ -14,7 +14,18 @@
 
 require_once("../settings.php");
 require_once("class/cls_geocoder.php");
-require_once("lib_lifesaver_5.6x.php");
+
+function localDBConnect()
+{
+    $dbh = new PDO(
+        'mysql:host=localhost;dbname=' . LOCALDB_DBNAME,
+        'root',
+        'root'
+    );
+    
+    $dbh->setAttribute(PDO::ATTR_EMULATE_PREPARES, FALSE);
+    return($dbh);
+}
 
 if($_GET["action"] == 'add')
 {
@@ -29,7 +40,7 @@ if($_GET["action"] == 'add')
             $_POST['addr2'] . " " .
             $_POST['state'] . " " .
             $_POST['pcode'];
-
+        
         $location = $geocoder->getCoordinatesOfStreetAddress($address);
         
         var_dump($location);
@@ -40,7 +51,7 @@ if($_GET["action"] == 'add')
         // insert into db
         $dbh = localDBConnect();
         $sth = $dbh->prepare('
-            INSERT INTO `healthcare_agents`
+            INSERT INTO `healthcareAgents`
                 (`id`, `name`, `address`, `phone`, `email`)
                 VALUES (NULL, :name, :address, :phone, :email)');
 
@@ -53,8 +64,8 @@ if($_GET["action"] == 'add')
             ));
 
         $sth = $dbh->prepare('
-            INSERT INTO `healthcare_locations`
-                (parentid, location)
+            INSERT INTO `healthcareLocations`
+                (agentID, location)
                 VALUES (:id, POINT(:longitude, :latitude))');
 
         $sth->execute(

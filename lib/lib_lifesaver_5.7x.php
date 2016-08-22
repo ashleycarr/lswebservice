@@ -53,9 +53,9 @@ function getClosestProfessionals($lat, $lon, $maxResults)
         a.phone AS phone, a.email AS email, 
         ST_Y(l.location) AS latitude, ST_X(l.location) AS longitude,
         ST_Distance_Sphere(Point(:userLon, :userLat), l.location) AS dist
-        FROM `healthcare_locations` AS l
-        INNER JOIN `healthcare_agents` AS a
-            ON l.parentid = a.id
+        FROM `healthcareLocations` AS l
+        INNER JOIN `healthcareAgents` AS a
+            ON l.agentID = a.id
         WHERE 
             ST_WITHIN(location, ST_MakeEnvelope(
             POINT(:lonMin, :latMin), POINT(:lonMax, :latMax)))
@@ -94,13 +94,13 @@ function getClosestProfessionals($lat, $lon, $maxResults)
     foreach($sth as $row)
     {
         $resultArray[] = array(
-            'name' => $row['name'],
-            'address' => $row['address'],
-            'phone' => $row['phone'],
-            'email' => $row['email'],
-            'latitude' => $row['latitude'],
+            'name'      => $row['name'],
+            'address'   => $row['address'],
+            'phone'     => $row['phone'],
+            'email'     => $row['email'],
+            'latitude'  => $row['latitude'],
             'longitude' => $row['longitude'],
-            'distance' => $row['dist']
+            'distance'  => $row['dist']
         );
     }
     

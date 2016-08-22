@@ -27,6 +27,7 @@ function localDBConnect()
     );
     
     $dbh->setAttribute(PDO::ATTR_EMULATE_PREPARES, FALSE);
+    $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     return($dbh);
 }
 
@@ -41,35 +42,35 @@ function getClosestProfessionals($lat, $lon, $maxResults)
 {
     $dbh = localDBConnect();
     
+    $sth = $dbh->prepare("
+        SELECT a.name AS name, a.address AS address, 
+        a.phone AS phone, a.email AS email, 
+        Y(l.location) AS latitude, X(l.location) AS longitude,
+        HAVERSINE(:userLat, :userLon, Y(l.location), X(l.location)) AS dist
+        FROM `healthcareLocations` AS l
+        INNER JOIN `healthcareAgents` AS a
+            ON l.agentID = a.id
+        WHERE 
+            X(l.location) BETWEEN :lonMin AND :lonMax AND
+            Y(l.location) BETWEEN :latMin AND :latMax
+        ORDER BY dist ASC LIMIT :maxResults;
+    ");
+        
+    $sth->bindValue(':userLat', $lat, PDO::PARAM_INT);
+    $sth->bindValue(':userLon', $lon, PDO::PARAM_INT);
+    $sth->bindValue(':maxResults', $maxResults, PDO::PARAM_INT);
+    
     //  Approximately a 5 square kilometer search area
     $boundRange = 0.05;
     
     while(true) {
         // generate coords for a search polygon around user location
-        $searchBounds =
-            ($lon - $boundRange) . ' ' . // upper left
-            ($lat + $boundRange) . ', ' .
-            ($lon + $boundRange) . ' ' . // upper right
-            ($lat + $boundRange) . ', ' . 
-            ($lon + $boundRange) . ' ' . // lower right
-            ($lat - $boundRange) . ', ' .
-            ($lon - $boundRange) . ' ' . // lower left
-            ($lat - $boundRange) . ', ' .
-            ($lon - $boundRange) . ' ' . // upper left
-            ($lat + $boundRange);
+        $sth->bindValue(':lonMin', ($lon - $boundRange), PDO::PARAM_INT);
+        $sth->bindValue(':latMin', ($lat - $boundRange), PDO::PARAM_INT);
+        $sth->bindValue(':lonMax', ($lon + $boundRange), PDO::PARAM_INT);
+        $sth->bindValue(':latMax', ($lat + $boundRange), PDO::PARAM_INT);
         
-        $sth = $dbh->query("
-            SELECT a.name AS name, a.address AS address, 
-            a.phone AS phone, a.email AS email, 
-            ST_Y(l.location) AS latitude, ST_X(l.location) AS longitude,
-            HAVERSINE($lat, $lon, ST_Y(l.location), ST_X(l.location)) AS dist
-            FROM `healthcare_locations` AS l
-            INNER JOIN `healthcare_agents` AS a
-                ON l.parentid = a.id
-            WHERE 
-                ST_WITHIN(location, ST_GeomFromText(\"POLYGON(($searchBounds))\"))
-            ORDER BY dist ASC LIMIT $maxResults;
-        ");
+        $sth->execute();
 
         // break if search has returned enough results
         if($sth->rowCount() > 0) {
