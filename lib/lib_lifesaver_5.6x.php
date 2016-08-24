@@ -27,7 +27,7 @@ function localDBConnect()
     );
     
     $dbh->setAttribute(PDO::ATTR_EMULATE_PREPARES, FALSE);
-    $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    //$dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     return($dbh);
 }
 
@@ -65,10 +65,10 @@ function getClosestProfessionals($lat, $lon, $maxResults)
     
     while(true) {
         // generate coords for a search polygon around user location
-        $sth->bindValue(':lonMin', ($lon - $boundRange), PDO::PARAM_INT);
         $sth->bindValue(':latMin', ($lat - $boundRange), PDO::PARAM_INT);
-        $sth->bindValue(':lonMax', ($lon + $boundRange), PDO::PARAM_INT);
         $sth->bindValue(':latMax', ($lat + $boundRange), PDO::PARAM_INT);
+        $sth->bindValue(':lonMin', ($lon - $boundRange), PDO::PARAM_INT);
+        $sth->bindValue(':lonMax', ($lon + $boundRange), PDO::PARAM_INT);
         
         $sth->execute();
 
@@ -88,11 +88,13 @@ function getClosestProfessionals($lat, $lon, $maxResults)
     foreach($sth as $row)
     {
         $resultArray[] = array(
-            'name' => $row['name'],
-            'address' => $row['address'],
-            'phone' => $row['phone'],
-            'email' => $row['email'],
-            'distance' => $row['dist']
+            'name'      => $row['name'],
+            'address'   => $row['address'],
+            'phone'     => $row['phone'],
+            'email'     => $row['email'],
+            'latitude'  => $row['latitude'],
+            'longitude' => $row['longitude'],
+            'distance'  => $row['dist']
         );
     }
     

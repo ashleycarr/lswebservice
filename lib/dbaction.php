@@ -23,12 +23,11 @@ function localDBConnect()
         'root'
     );
     
-    $dbh->setAttribute(PDO::ATTR_EMULATE_PREPARES, FALSE);
+    $dbh->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
     return($dbh);
 }
 
-if($_GET["action"] == 'add')
-{
+if ($_GET["action"] == 'add') {
     try {
         
         // fetch latitude and longitude for address
@@ -61,7 +60,8 @@ if($_GET["action"] == 'add')
                 ':address' => $address,
                 ':phone' => $phone,
                 ':email' => $_POST['email']
-            ));
+            )
+        );
 
         $sth = $dbh->prepare('
             INSERT INTO `healthcareLocations`
@@ -73,8 +73,9 @@ if($_GET["action"] == 'add')
                 ':id' => $dbh->lastInsertId(),
                 ':longitude' => $location['longitude'],
                 ':latitude' => $location['latitude']
-            ));
-    }
+            )
+        );
+    } 
     catch (exception $e) {
         echo($e->getMessage());
     }
