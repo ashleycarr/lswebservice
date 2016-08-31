@@ -2,23 +2,24 @@
 
 /**
  * cls_apiresponse.php
- * 
- * This class contains methods for storing and encoding results in an api 
+ *
+ * This class contains methods for storing and encoding results in an api
  * response for the client.
- * 
+ *
  * Written by Ashley Carr (21591371@student.uwa.edu.au)
  *
- * This work is licensed under the Creative Commons Attribution-NonCommercial 
+ * This work is licensed under the Creative Commons Attribution-NonCommercial
  * 4.0 International License.
- * 
- * To view a copy of this license, visit 
+ *
+ * To view a copy of this license, visit
  * http://creativecommons.org/licenses/by-nc/4.0/ or send a letter to
  * Creative Commons, PO Box 1866, Mountain View, CA 94042, USA. */
 
+namespace Lifesaver\APIHandlers;
 
-class apiResponse
+class Response
 {
-    private $results;
+    private $resultSet;
     
     /**
      * constructor
@@ -26,7 +27,7 @@ class apiResponse
      */
     public function __construct($resultSet)
     {
-        $this->results = $resultSet;
+        $this->resultSet = $resultSet;
     }
     
     /**
@@ -35,8 +36,6 @@ class apiResponse
      */
     public function __tostring()
     {
-        return(json_encode($this->results));
+        return(json_encode($this->resultSet));
     }
 }
-
-?>

@@ -2,33 +2,34 @@
 
 /**
  * lib_lifesaver.php
- * 
- * Library of functions used by the lifesaver web service 
+ *
+ * Library of functions used by the lifesaver web service
  * This version of the library takes advantage of the improved postGIS spacial
  * functions found in MySQL 5.7.x and up.
- * 
+ *
  * Written by Ashley Carr (21591371@student.uwa.edu.au)
  *
- * This work is licensed under the Creative Commons Attribution-NonCommercial 
+ * This work is licensed under the Creative Commons Attribution-NonCommercial
  * 4.0 International License.
- * 
- * To view a copy of this license, visit 
+ *
+ * To view a copy of this license, visit
  * http://creativecommons.org/licenses/by-nc/4.0/ or send a letter to
  * Creative Commons, PO Box 1866, Mountain View, CA 94042, USA. */
 
+namespace Lifesaver\Library;
 
 /**
  * creates a new PDO object to the local DB
  */
-function localDBConnect()
+function localDBConnect($dbName, $username, $password)
 {
-    $dbh = new PDO(
-        'mysql:host=localhost;dbname=' . LOCALDB_DBNAME,
-        LOCALDB_USERNAME,
-        LOCALDB_PASSWORD
+    $dbh = new \PDO(
+        'mysql:host=localhost;dbname=' . $dbName,
+        $username,
+        $password
     );
     
-    $dbh->setAttribute(PDO::ATTR_EMULATE_PREPARES, FALSE);
+    $dbh->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
     return($dbh);
 }
 
@@ -43,7 +44,7 @@ function getClosestProfessionals($lat, $lon, $maxResults)
 {
     $startTime = microtime();
     
-    $dbh = localDBConnect();
+    $dbh = localDBConnect(LOCALDB_DBNAME, LOCALDB_USERNAME, LOCALDB_PASSWORD);
     
     // Find an appropriate search range with enough results.
     // ~250m radius to start.
@@ -57,35 +58,34 @@ function getClosestProfessionals($lat, $lon, $maxResults)
             POINT(:lonMin, :latMin), POINT(:lonMax, :latMax)));
     ');
     
-    $sth->bindValue(':maxResults', $maxResults, PDO::PARAM_INT);
-    
-    //  Maximum search is 10 degrees or ~1100kms around the user location.
-    while($boundRange <= 10) {
-        // generate coords for a search polygon around user location   
-        $sth->bindValue(':lonMin', ($lon - $boundRange), PDO::PARAM_INT);
-        $sth->bindValue(':latMin', ($lat - $boundRange), PDO::PARAM_INT);
-        $sth->bindValue(':lonMax', ($lon + $boundRange), PDO::PARAM_INT);
-        $sth->bindValue(':latMax', ($lat + $boundRange), PDO::PARAM_INT);
+    //  Maximum search is 16 degrees lat/lon, or approximately 1600kms
+    //  around the user location.
+    while ($boundRange <= 16) {
+        // generate coords for a search polygon around user location
+        $sth->bindValue(':lonMin', ($lon - $boundRange), \PDO::PARAM_INT);
+        $sth->bindValue(':latMin', ($lat - $boundRange), \PDO::PARAM_INT);
+        $sth->bindValue(':lonMax', ($lon + $boundRange), \PDO::PARAM_INT);
+        $sth->bindValue(':latMax', ($lat + $boundRange), \PDO::PARAM_INT);
         $sth->execute();
         
         // If there are enough results to work with, use this range.
-        if($sth->fetchColumn(0) >= $maxResults) {
+        if ($sth->fetchColumn(0) >= $maxResults) {
+            // could come back the other way here?
             break;
         }
         
-        // Otherwise double the range, and try again.
+        // Otherwise, lets try doubling the search area.
         $boundRange *= 2;
     }
     
-    if($boundRange > 10) {
-        throw new exception("Search: Unable to find professionals" .
-                            " within 1100kms of user.", 400);
+    if ($boundRange > 10) {
+        throw new exception('Search: Unable to find professionals' .
+                            ' within 1600kms of user.', 400);
     }
     
-    // Perform the search.
-    
+    // With the search area found, perform the search.
     $sth = $dbh->prepare('
-        SELECT a.name AS name, a.address AS address, 
+        SELECT a.id as id, a.name AS name, a.address AS address, 
         a.phone AS phone, a.email AS email, 
         ST_Y(l.location) AS latitude, ST_X(l.location) AS longitude,
         ST_Distance_Sphere(POINT(:userLon, :userLat), l.location) AS dist
@@ -98,18 +98,19 @@ function getClosestProfessionals($lat, $lon, $maxResults)
         ORDER BY dist ASC LIMIT :maxResults;
         ');
     
-    $sth->bindValue(':userLat', $lat, PDO::PARAM_INT);
-    $sth->bindValue(':userLon', $lon, PDO::PARAM_INT);
-    $sth->bindValue(':maxResults', $maxResults, PDO::PARAM_INT);  
-    $sth->bindValue(':lonMin', ($lon - $boundRange), PDO::PARAM_INT);
-    $sth->bindValue(':latMin', ($lat - $boundRange), PDO::PARAM_INT);
-    $sth->bindValue(':lonMax', ($lon + $boundRange), PDO::PARAM_INT);
-    $sth->bindValue(':latMax', ($lat + $boundRange), PDO::PARAM_INT);
+    $sth->bindValue(':userLat', $lat, \PDO::PARAM_INT);
+    $sth->bindValue(':userLon', $lon, \PDO::PARAM_INT);
+    $sth->bindValue(':maxResults', $maxResults, \PDO::PARAM_INT);
+    $sth->bindValue(':lonMin', ($lon - $boundRange), \PDO::PARAM_INT);
+    $sth->bindValue(':latMin', ($lat - $boundRange), \PDO::PARAM_INT);
+    $sth->bindValue(':lonMax', ($lon + $boundRange), \PDO::PARAM_INT);
+    $sth->bindValue(':latMax', ($lat + $boundRange), \PDO::PARAM_INT);
     $sth->execute();
     
-    foreach($sth as $row)
-    {
+    // Format the results of search to expected array for JSON encoding.
+    foreach ($sth as $row) {
         $resultArray['results'][] = array(
+            'id'        => $row['id'],
             'name'      => $row['name'],
             'address'   => $row['address'],
             'phone'     => $row['phone'],
@@ -120,6 +121,7 @@ function getClosestProfessionals($lat, $lon, $maxResults)
         );
     }
     
+    // Add statistics.
     $resultArray['statistics'] = array(
         'queryTime' => (microtime() - $startTime) * 1000 . 'ms',
         'searchRadias' => $boundRange * 111.2 * 2 . 'km',
@@ -127,5 +129,3 @@ function getClosestProfessionals($lat, $lon, $maxResults)
 
     return($resultArray);
 }
-
-?>

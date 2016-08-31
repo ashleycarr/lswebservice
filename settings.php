@@ -2,11 +2,8 @@
 
 /*******************************************************************************
  * settings.php
- * Contains settings used for the LifeSaver admin site.
+ * Contains settings used for the LifeSaver webservice.
  /*****************************************************************************/
-
-// My personal Google Key.  Remove for production.
-define('GOOGLE_GEOAPIKEY', "AIzaSyBpN0BcxFtmFKVteFgwsR6w5LQbz3NPioY");
 
 // Local MYSQL database settings
 define('LOCALDB_USERNAME', 'lsguest');

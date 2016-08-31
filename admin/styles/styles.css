@@ -1,0 +1,260 @@
+HTML
+{
+    font-family: verdana, arial, sans-serif;
+    background-color: #FFFFFF;
+    font-size: 1em;
+}
+
+A
+{
+    cursor: pointer;
+}
+
+HEADER
+{
+    color: #FA5B5B;
+    text-align: right;
+    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ffcdc9+0,ffffff+100 */
+    background: rgb(255, 205, 201);
+    /* Old browsers */
+    background: -moz-linear-gradient(top, rgba(255, 205, 201, 1) 0%, rgba(255, 255, 255, 1) 100%);
+    /* FF3.6-15 */
+    background: -webkit-linear-gradient(top, rgba(255, 205, 201, 1) 0%, rgba(255, 255, 255, 1) 100%);
+    /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to bottom, rgba(255, 205, 201, 1) 0%, rgba(255, 255, 255, 1) 100%);
+    /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffcdc9', endColorstr='#ffffff',GradientType=0 );
+    /* IE6-9 */
+}
+
+HEADER IMG
+{
+    padding: 0px 0px 0px 20px;
+    float: left;
+    position: absolute;
+    top: 0em;
+    left: 0em;
+    margin: 0px;
+}
+
+HEADER P
+{
+    padding: 2em;
+    font-style: italic;
+}
+
+HEADER NAV
+{
+    border-bottom: 1px solid black;
+    border-top: 1px solid black;
+    text-align: right;
+    margin-top: 5.7em;
+    padding-top: 1.2em;
+    padding-bottom: 1.2em;
+}
+
+HEADER NAV UL LI
+{
+    display: inline-block;
+    padding-left: 1.5em;
+    padding-right: 1.5em;
+    border-right: 1px solid #B32E2E;
+}
+
+HEADER NAV UL LI:last-child
+{
+    border-right: none;
+}
+
+HEADER NAV A
+{
+    color: white;
+    text-decoration: none;
+}
+
+HEADER NAV A:hover
+{
+    color: #B0D5EE;
+}
+
+SECTION,
+ASIDE,
+FOOTER
+{
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0em;
+}
+
+ASIDE
+{
+    padding: 2em;
+}
+
+ASIDE H2
+{
+    font-weight: bold;
+    font-size:1.5xem;
+    padding: 1em 0em 1em 0em;
+}
+
+TABLE
+{
+    border-collapse: collapse;
+    background-color: white;
+    border: 1px solid #F7AFAF;
+    width: 100%;
+    box-shadow: 5px 5px 7px 0px rgba(0, 0, 0, 0.085);
+}
+
+TABLE TR:first-child,
+HEADER NAV
+{
+    font-weight: bold;
+    color: #FFFFFF;
+    text-shadow: 0em 1px 1px #661212;
+    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#f85032+0,f16f5c+50,f6290c+51,f02f17+71,e73827+100;Red+Gloss+%231 */
+    background: rgb(248, 80, 50);
+    /* Old browsers */
+    background: -moz-linear-gradient(top, rgba(248, 80, 50, 1) 0%, rgba(241, 111, 92, 1) 50%, rgba(246, 41, 12, 1) 51%, rgba(240, 47, 23, 1) 71%, rgba(231, 56, 39, 1) 100%);
+    /* FF3.6-15 */
+    background: -webkit-linear-gradient(top, rgba(248, 80, 50, 1) 0%, rgba(241, 111, 92, 1) 50%, rgba(246, 41, 12, 1) 51%, rgba(240, 47, 23, 1) 71%, rgba(231, 56, 39, 1) 100%);
+    /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to bottom, rgba(248, 80, 50, 1) 0%, rgba(241, 111, 92, 1) 50%, rgba(246, 41, 12, 1) 51%, rgba(240, 47, 23, 1) 71%, rgba(231, 56, 39, 1) 100%);
+    /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f85032', endColorstr='#e73827',GradientType=0 );
+    /* IE6-9 */
+}
+
+TABLE TR TD
+{
+    padding: 0.5em;
+}
+
+TABLE TR TD IMG
+{
+    width: 1.4em;
+}
+
+TABLE TR:nth-child(odd)
+{
+    background-color: #FADCDC;
+}
+
+TABLE TR TD:last-child
+{
+    text-align: right;
+}
+
+DIALOG
+{
+    border: 1px solid #F5D1D1;
+    display: block;
+    width: 520px;
+    padding: 10px;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 100px;
+    border-radius: 20px;
+    box-shadow: 5px 5px 14px 0px rgba(0, 0, 0, 0.265);
+}
+
+DIALOG FORM LABEL
+{
+    display: block;
+    text-align: left;
+    padding: 10px;
+}
+
+DIALOG FORM INPUT,
+DIALOG FORM SELECT
+{
+    width: 500px;
+    height: 30px;
+    border-radius: 8px;
+    border: 1px solid #F8D2D2;
+    margin-bottom: 15px;
+    background-color: #FFFBFB;
+    font-size: 18px;
+    padding-left: 10px;
+}
+
+DIALOG SELECT#state,
+DIALOG INPUT#pcode
+{
+    width: 10em;
+}
+
+DIALOG FORM
+{
+    text-align: right;
+}
+
+DIALOG#add IMG,
+DIALOG#search IMG
+{
+    float: right;
+    display: inline;
+    width: 1.2em;
+}
+
+DIALOG#add P,
+DIALOG#search P
+{
+    display: block;
+}
+
+DIALOG#add,
+DIALOG#search
+{
+    position: absolute;
+    top: 12em;
+    background-color: white;
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
+    display: none;
+}
+
+DIALOG H3
+{
+    font-weight: bold;
+    padding: 15px;
+    font-style: italic;
+    color: #ED3841;
+}
+
+SECTION NAV UL LI
+{
+    display: inline;
+    padding: 5em;
+}
+
+SECTION NAV
+{
+    text-align: center;
+    padding-bottom: 1em;
+}
+
+FOOTER
+{
+    text-align: center;
+    font-size: 10px;
+    width: 100%;
+    margin: 1em 0em 0em 0em;
+    padding: 3em 0em 2em 0em;
+    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ffffff+0,ffddde+100 */
+    background: rgb(255, 255, 255);
+    /* Old browsers */
+    background: -moz-linear-gradient(top, rgba(255, 255, 255, 1) 0%, rgba(255, 221, 222, 1) 100%);
+    /* FF3.6-15 */
+    background: -webkit-linear-gradient(top, rgba(255, 255, 255, 1) 0%, rgba(255, 221, 222, 1) 100%);
+    /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 1) 0%, rgba(255, 221, 222, 1) 100%);
+    /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ffddde',GradientType=0 );
+    /* IE6-9 */
+}

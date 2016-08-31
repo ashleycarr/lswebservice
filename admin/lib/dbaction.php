@@ -2,30 +2,19 @@
 
 /**
  * dbaction.php
- * 
+ *
  * Performs actions on the lifesaver database.
  *
- * This work is licensed under the Creative Commons Attribution-NonCommercial 
+ * This work is licensed under the Creative Commons Attribution-NonCommercial
  * 4.0 International License.
- * 
- * To view a copy of this license, visit 
+ *
+ * To view a copy of this license, visit
  * http://creativecommons.org/licenses/by-nc/4.0/ or send a letter to
  * Creative Commons, PO Box 1866, Mountain View, CA 94042, USA. */
 
 require_once("../settings.php");
+require_once("lib_lifesaver.php");
 require_once("class/cls_geocoder.php");
-
-function localDBConnect()
-{
-    $dbh = new PDO(
-        'mysql:host=localhost;dbname=' . LOCALDB_DBNAME,
-        'root',
-        'root'
-    );
-    
-    $dbh->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
-    return($dbh);
-}
 
 if ($_GET["action"] == 'add') {
     try {
@@ -34,7 +23,7 @@ if ($_GET["action"] == 'add') {
         $geocoder = new geocoder(GOOGLE_GEOAPIKEY);
         $geocoder->setRegion("au");
 
-        $address = 
+        $address =
             $_POST['addr1'] . " " .
             $_POST['addr2'] . " " .
             $_POST['state'] . " " .
@@ -59,8 +48,7 @@ if ($_GET["action"] == 'add') {
                 ':name' => $_POST['name'],
                 ':address' => $address,
                 ':phone' => $phone,
-                ':email' => $_POST['email']
-            )
+                ':email' => $_POST['email'])
         );
 
         $sth = $dbh->prepare('
@@ -72,25 +60,16 @@ if ($_GET["action"] == 'add') {
             array(
                 ':id' => $dbh->lastInsertId(),
                 ':longitude' => $location['longitude'],
-                ':latitude' => $location['latitude']
-            )
+                ':latitude' => $location['latitude'])
         );
-    } 
-    catch (exception $e) {
+    } catch (exception $e) {
         echo($e->getMessage());
     }
-    exit;
-}
-
-if($_GET["action"] == 'update')
-{
     
+    header('Location: login.php?error=1');
     exit;
 }
 
-if($_GET["action"] == 'delete')
-{
+if ($_GET["action"] == 'delete') {
     exit;
 }
-
-?>

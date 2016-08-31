@@ -2,21 +2,22 @@
 
 /**
  * cls_geocoder.php
- * 
+ *
  * This class handles conversion of a street address to latitude and longidue
  * coordinates via the Google Maps Geocoding API.
- * 
+ *
  * Written by Ashley Carr (21591371@student.uwa.edu.au)
  *
- * This work is licensed under the Creative Commons Attribution-NonCommercial 
+ * This work is licensed under the Creative Commons Attribution-NonCommercial
  * 4.0 International License.
- * 
- * To view a copy of this license, visit 
+ *
+ * To view a copy of this license, visit
  * http://creativecommons.org/licenses/by-nc/4.0/ or send a letter to
- * Creative Commons, PO Box 1866, Mountain View, CA 94042, USA. 
- */
+ * Creative Commons, PO Box 1866, Mountain View, CA 94042, USA. */
 
-class geocoder
+namespace Lifesaver\APIHandlers;
+
+class Geocoder
 {
     private $googleAPIKey;
     private $region;
@@ -40,7 +41,11 @@ class geocoder
         // format address string for url.
         // strip non alpha numeric characters
         $addressString = preg_replace('/\s+/', '+', $addressString);
-        $addressString = preg_replace('/[^A-Za-z0-9\++\-]/', '', $addressString);
+        $addressString = preg_replace(
+            '/[^A-Za-z0-9\++\-]/',
+            '',
+            $addressString
+        );
         // replace n spaces with a single + character.
         return($addressString);
     }
@@ -52,20 +57,20 @@ class geocoder
      */
     private function fetchGeocodeData($address)
     {
-        $url = "https://maps.googleapis.com/maps/api/geocode/json?" . 
+        $url = "https://maps.googleapis.com/maps/api/geocode/json?" .
                "address=$address$this->region&key=$this->googleAPIKey";
 
         // fetch data from google geocode api.
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_HEADER, 0);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        $json = curl_exec($ch);
-        curl_close($ch);
+        $curlh = curl_init();
+        curl_setopt($curlh, CURLOPT_URL, $url);
+        curl_setopt($curlh, CURLOPT_HEADER, 0);
+        curl_setopt($curlh, CURLOPT_RETURNTRANSFER, true);
+        $json = curl_exec($curlh);
+        curl_close($curlh);
         
-        if($json == false) {
+        if ($json == false) {
             throw new exception("Unable to contact Google web service: " .
-                                curl_error($ch));
+                                curl_error($curlh));
         }
          // decode and return the json result object
         return(json_decode($json, true));
@@ -88,11 +93,9 @@ class geocoder
      */
     public function setRegion($region)
     {
-        if($region == "")
-        {
+        if ($region == "") {
             $this->region = "";
-        }
-        else {
+        } else {
             $this->region = "&region=$region";
         }
     }
@@ -110,25 +113,23 @@ class geocoder
         $gObj = $this->fetchGeocodeData($address);
         
         // if the request failed, throw exception with google's error message.
-        if($this->APIRequestError($gObj)) {
+        if ($this->APIRequestError($gObj)) {
             throw new exception("Google Geocoding API failed with message: " .
                                 $gObj['error_message']);
         }
         
         // if there are no results to show, the request failed.
-        if(!isset($gObj['results'])) {
+        if (!isset($gObj['results'])) {
             throw new exception("Google Geocoding API failed: " .
                                 "Malformed response with no error message.");
         }
     
-        if(isset($gObj['status']) && $gObj['status'] == "ZERO_RESULTS") {
+        if (isset($gObj['status']) && $gObj['status'] == "ZERO_RESULTS") {
             throw new exception("Google Geocoding API failed: " .
-                                "Zero results returned from address lookup.");            
+                                "Zero results returned from address lookup.");
         }
         return(array(
             'latitude'  => $gObj['results'][0]['geometry']['location']['lat'],
             'longitude' => $gObj['results'][0]['geometry']['location']['lng']));
     }
 }
-
-?>

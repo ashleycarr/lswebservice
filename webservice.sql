@@ -35,26 +35,12 @@ CREATE TABLE healthcareLocations (
 # Used to store admin users and password hashes.
 CREATE TABLE adminUsers (
     id INT AUTO_INCREMENT,
-    userName VARCHAR(128) NOT NULL,
-    userPassword VARCHAR(128) NOT NULL,
+    userName VARCHAR(255) NOT NULL,
+    userPassword VARCHAR(255) NOT NULL,
     PRIMARY KEY (id)
 ) ENGINE=MyISAM;
 
 # CREATE USER lsadmin - select delete update add from healthcare agents and locations
-
-# Used for MySQL version 5.6x for distance calculations
-CREATE FUNCTION HAVERSINE(
-    userLat FLOAT(10, 6), 
-    userLon FLOAT(10, 6), 
-    destLat FLOAT(10, 6), 
-    destLon FLOAT(10, 6))
-RETURNS float(15, 6)
-    NO SQL
-    COMMENT 'Haversine Formula'
-RETURN 6372800 * 2 * ASIN(SQRT(POWER(
-    SIN((userLat - destLat) * pi()/180 / 2), 2) + 
-    COS(userLat * pi()/180) * COS(destLat * pi()/ 180) * 
-    POWER(SIN((userLon - destLon) * pi() /180 / 2), 2)));
     
 INSERT INTO adminUsers VALUES (
     NULL,
@@ -65,4 +51,10 @@ INSERT INTO adminUsers VALUES (
 CREATE USER 'lsguest'@'localhost' IDENTIFIED BY 'lsguest';
 GRANT SELECT ON lifesaver.healthcareLocations TO 'lsguest'@'localhost';
 GRANT SELECT ON lifesaver.healthcareAgents TO 'lsguest'@'localhost';
-GRANT EXECUTE ON FUNCTION HAVERSINE TO 'lsguest'@'localhost';
+
+
+# lsguest user - allowed read access on healthcare locations and agents
+CREATE USER 'lsadmin'@'localhost' IDENTIFIED BY 'k8U7Bn#maTrAq@FULv6%bhVqQLR*CpGz';
+GRANT SELECT, DELETE, UPDATE, INSERT ON lifesaver.healthcareLocations TO 'lsadmin'@'localhost';
+GRANT SELECT, DELETE, UPDATE, INSERT ON lifesaver.healthcareAgents TO 'lsadmin'@'localhost';
+GRANT SELECT, DELETE, UPDATE, INSERT ON lifesaver.adminUsers TO 'lsadmin'@'localhost';

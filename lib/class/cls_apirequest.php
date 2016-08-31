@@ -2,20 +2,21 @@
 
 /**
  * cls_apirequest.php
- * 
+ *
  * This class handles and verifies JSON formatted requests from the client.
- * 
+ *
  * Written by Ashley Carr (21591371@student.uwa.edu.au)
- * 
- * This work is licensed under the Creative Commons Attribution-NonCommercial 
+ *
+ * This work is licensed under the Creative Commons Attribution-NonCommercial
  * 4.0 International License.
- * 
- * To view a copy of this license, visit 
+ *
+ * To view a copy of this license, visit
  * http://creativecommons.org/licenses/by-nc/4.0/ or send a letter to
- * Creative Commons, PO Box 1866, Mountain View, CA 94042, USA.
- */
+ * Creative Commons, PO Box 1866, Mountain View, CA 94042, USA. */
 
-class apiRequest
+namespace Lifesaver\APIHandlers;
+
+class Request
 {
     private $request;
     
@@ -25,22 +26,31 @@ class apiRequest
      */
     public function __construct($code)
     {
-        if(!$this->request = json_decode($code, true)) {
-            throw new exception("APIRequest: Invalid JSON syntax in client request: " .
-                                json_last_error_msg() . strlen($code), 400);
+        if (!$this->request = json_decode($code, true)) {
+            throw new exception(
+                'APIRequest: Invalid JSON syntax in client request: ' .
+                json_last_error_msg() . strlen($code),
+                400
+            );
         }
         
-        if(!$this->validRequest()) {
-            throw new exception("APIRequest: Invalid client request format.", 400);
+        if (!$this->validRequest()) {
+            throw new exception(
+                'APIRequest: Invalid client request format.',
+                400
+            );
         }
         
-        if(!$this->validLatitude($this->request['lat']) ||
+        if (!$this->validLatitude($this->request['lat']) ||
            !$this->validLongitude($this->request['lon'])) {
-            throw new exception("APIRequest: Invalid client coordinates.", 400);
+            throw new exception('APIRequest: Invalid client coordinates.', 400);
         }
         
-        if(!$this->validNumResults($this->request['numResults'])) {
-            throw new exception("APIRequest: Invalid number of results requested.", 400);
+        if (!$this->validNumResults($this->request['numResults'])) {
+            throw new exception(
+                'APIRequest: Invalid number of results requested.',
+                400
+            );
         }
     }
     
@@ -74,7 +84,7 @@ class apiRequest
     /**
      * returns true if $longitude is between +-180 degrees
      * @param float $longitude longitude component of client coordinate
-     */ 
+     */
     private function validLongitude($longitude)
     {
         return($longitude >= -180 && $longitude <= 180);
@@ -95,10 +105,8 @@ class apiRequest
      */
     public function getRequestParameters()
     {
-        return(array('lat' => $this->request['lat'], 
+        return(array('lat' => $this->request['lat'],
                      'lon' => $this->request['lon'],
                      'numResults' => $this->request['numResults']));
     }
 }
-
-?>
