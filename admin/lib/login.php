@@ -1,9 +1,9 @@
 <?php
 
 /**
- * dbaction.php
+ * login.php
  *
- * Performs actions on the lifesaver database.
+ * Logs the user into the admin website checking supplied credentials.
  *
  * This work is licensed under the Creative Commons Attribution-NonCommercial
  * 4.0 International License.
@@ -17,6 +17,12 @@ namespace Lifesaver;
 require_once('../settings.php');
 require_once('lib_lifesaver.php');
 require_once('class/cls_user.php');
+
+if (!isset($_POST['username']) || !isset($_POST['password']) ||
+    $_POST['username'] == '' || $_POST['password'] == '') {
+    header('Location: ../login.php?error=2');
+    exit;
+}
 
 session_start();
 

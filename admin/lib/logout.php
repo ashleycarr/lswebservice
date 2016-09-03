@@ -1,9 +1,9 @@
 <?php
 
 /**
- * dbaction.php
+ * logout.php
  * 
- * Performs actions on the lifesaver database.
+ * logs a user out of the admin website.
  *
  * This work is licensed under the Creative Commons Attribution-NonCommercial 
  * 4.0 International License.
@@ -14,4 +14,4 @@
 
 session_start();
 session_destroy();
-header('Location: login.php');
+header('Location: ../login.php');

@@ -39,7 +39,7 @@ HEADER IMG
 
 HEADER P
 {
-    padding: 2em;
+    padding: 2.1em;
     font-style: italic;
 }
 
@@ -200,10 +200,10 @@ DIALOG#search IMG
     width: 1.2em;
 }
 
-DIALOG#add P,
-DIALOG#search P
+DIALOG Padminadmi
 {
     display: block;
+    padding: 26px;
 }
 
 DIALOG#add,
@@ -217,6 +217,12 @@ DIALOG#search
     left: 0;
     right: 0;
     display: none;
+}
+
+DIALOG P
+{
+    display: block;
+    padding: 2em;
 }
 
 DIALOG H3

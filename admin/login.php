@@ -1,6 +1,7 @@
 <?php
-    $errors = array("Login failed:  Invalid username or password.",
-                    "Logged out: Session timed out");
+    $errors = array("Login failed: Invalid username or password.",
+                    "Logged out: Session timed out",
+                    "You must enter a username and password.");
 ?><!DOCTYPE HTML>
 
 <html>
@@ -16,7 +17,7 @@
     <dialog>
         <img src="images/lifesaverlogo.png" />
         <?php
-        if (isset($_GET['error']) && isset($errors[$_GET['error']])) {
+        if (isset($_GET['error'])  && $_GET['error'] != '' && isset($errors[$_GET['error']])) {
             echo('<h3>' . $errors[$_GET['error']] . "</h3>\n");
         }
         ?><p>Please use the login form below:</p>
