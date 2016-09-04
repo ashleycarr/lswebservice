@@ -5,14 +5,10 @@
  *
  * This class handles user logins.
  *
- * Written by Ashley Carr (21591371@student.uwa.edu.au)
- *
- * This work is licensed under the Creative Commons Attribution-NonCommercial
- * 4.0 International License.
- *
- * To view a copy of this license, visit
- * http://creativecommons.org/licenses/by-nc/4.0/ or send a letter to
- * Creative Commons, PO Box 1866, Mountain View, CA 94042, USA. */
+ * @author     Ashley Carr <21591371@student.uwa.edu.au>
+ * @copyright  Ashley Carr <21591371@student.uwa.edu.au>
+ * @license    http://creativecommons.org/licenses/by-nc/4.0/
+ * @link       https://github.com/ashleycarr/lswebservice */
 
 namespace Lifesaver\Library;
 
@@ -27,6 +23,12 @@ class User
         $this->userName = $userName;
     }
     
+    
+    /**
+     * authenticates a user by verifying their credentials in the database.
+     * @param  string  $password the users password
+     * @return boolean true if verified
+     */
     public function authenticate($password)
     {
         $dbh = localDBConnect(
@@ -50,6 +52,13 @@ class User
         }
     }
     
+    
+    /**
+     * updates a users password in the database
+     * @param string $oldPassword the user's old password
+     * @param string $newPassword the user's new password to update
+     * @return boolean true if the password was successfully updated
+     */
     public function updatePassword($oldPassword, $newPassword)
     {
         $dbh = localDBConnect(
@@ -78,23 +87,39 @@ class User
         return(true);
     }
     
+    
+    /**
+     * set's the user as logged in.
+     */
     public function setLoggedIn()
     {
         $this->loggedIn = true;
         $this->lastActivity = time();
     }
     
+    
+    /**
+     * Updates the last activity timestamp for timeouts.
+     */
     public function setLastActivity()
     {
         $this->lastActivity = time();
     }
 
+    
+    /**
+     * @return boolean true if the user is logged in
+     */
     public function isLoggedIn()
     {
         return($this->loggedIn &&
                time() - $this->lastActivity < 1800);
     }
     
+    
+    /**
+     * @return string the username of this user.
+     */
     public function getUsername()
     {
         return($this->userName);
