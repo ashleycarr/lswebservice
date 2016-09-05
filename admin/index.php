@@ -6,38 +6,71 @@ require_once('settings.php');
 require_once('lib/lib_lifesaver.php');
 require_once('lib/class/cls_user.php');
 
+// Check if user is logged in
 session_start();
 
 if (!isset($_SESSION['user']) || !$_SESSION['user']->isLoggedIn()) {
     header('Location: login.php?error=1');
     exit;
 }
-
+// Update users activity timestamp
 $_SESSION['user']->setLastActivity();
 
+
+// Connect to the database.
 $dbh = Library\localDBConnect(
     LOCALDB_DBNAME,
     LOCALDB_USERNAME,
     LOCALDB_PASSWORD
 );
 
-$sth = $dbh->prepare('
-    SELECT * FROM `healthcareAgents`
-    LIMIT :pageStart, :pageSize
-');
+// Fetch healthcareAgents
+if (isset($_GET['query'])) {
+    $sth = $dbh->prepare('
+        SELECT SQL_CALC_FOUND_ROWS * FROM `healthcareAgents`
+        WHERE name LIKE :query
+        LIMIT :pageStart, :pageSize
+    ');
+    
+    $sth->bindValue(':query', '%' . $_GET['query'] . '%');
+} else {
+    $sth = $dbh->prepare('
+        SELECT SQL_CALC_FOUND_ROWS * FROM `healthcareAgents`
+        LIMIT :pageStart, :pageSize
+    ');
+}
 
-if (isset($_GET['page']) && $_GET['page'] >= 0) {
-    $page = $_GET['page'];
+// Check we're not on a negative page.
+if (isset($_GET['page'])) {
+    if($_GET['page'] < 0) {
+        $page = 0;
+    } else {
+        $page = $_GET['page'];
+    }
 } else {
     $page = 0;
 }
 
-$sth->execute(
-    array(
-        ':pageStart' => $page * ADMIN_RESULTSPERPAGE,
-        ':pageSize' => ADMIN_RESULTSPERPAGE,
-    )
-);
+$sth->bindValue(':pageStart', $page * ADMIN_RESULTSPERPAGE);
+$sth->bindValue(':pageSize', ADMIN_RESULTSPERPAGE);
+$sth->execute();
+
+// Check if we're on the last page.
+$sthFoundRows = $dbh->query('SELECT FOUND_ROWS()');
+
+// if we're on an invalid page.
+if(ADMIN_RESULTSPERPAGE * $page > $sthFoundRows->fetchColumn(0)) {
+    header('Location: index.php');
+}
+
+if(ADMIN_RESULTSPERPAGE * ($page + 1) > $sthFoundRows->fetchColumn(0))
+{
+    $lastPage = true;
+} else {
+    $lastPage = false;
+}
+
+unset($sthFoundRows);
 
 ?><!DOCTYPE HTML>
 
@@ -61,7 +94,12 @@ $sth->execute(
 		<nav>
 			<ul>
                 <li><a onclick="$('#search').hide(); $('#edit').hide(); $('#add').toggle();">Add Professional</a></li>
-                <li><a onclick="$('#edit').hide(); $('#add').hide(); $('#search').toggle();">Search Professionals</a></li>
+                <?php
+                if(isset($_GET['query'])) {
+                    echo("<li><a href=\"index.php\">All Professionals</a></li>");
+                } else {
+                    echo("<li><a onclick=\"$('#edit').hide(); $('#add').hide(); $('#search').toggle();\">Search Professionals</a></li>");
+                } ?>
                 <li><a href="index.html">Help</a></li>
 			</ul>
 		</nav>
@@ -76,13 +114,18 @@ $sth->execute(
 	<section>
         <nav>
             <ul>
-                <li><a href="index.php?page=<?=$page-1?>">prev</a></li>
-                <li><a href="index.php?page=<?=$page+1?>">next</a></li>
+                <?php
+                if ($page > 0) {
+                    echo("<li><a href=\"?page=<?=$page-1?>\">prev</a></li>");
+                } ?>
+                <?php
+                if (!$lastPage) {
+                    echo("<li><a href=\"?page=<?=$page+1?>\">next</a></li>");
+                } ?>
             </ul>
         </nav>
         <table>
             <tr>
-                <td>ID</td>
                 <td>Name</td>
                 <td>Address</td>
                 <td>Phone</td>
@@ -92,13 +135,12 @@ $sth->execute(
             <?php
             foreach ($sth as $row) {
             ?><tr>
-                <td><?=$row['id']?></td>
                 <td><?=$row['name']?></td>
                 <td><?=$row['address']?></td>
                 <td><?=$row['phone']?></td>
                 <td><?=$row['email']?></td>
                 <td>
-                    <a href="lib/dbaction.php?action=delete?id=<?=$row['id']?>"><img src="images/trash.png" /></a>
+                    <a href="lib/dbaction.php?action=delete&id=<?=$row['id']?>"><img src="images/trash.png" /></a>
                 </td>
             </tr>
             <?php } ?>
@@ -108,12 +150,12 @@ $sth->execute(
     <dialog id="add">
         <a onclick="$('#add').hide()"><img src="images/cross.png" /></a>
         <p>Use this form to add a professional to the database.</p>
-        <form id="addForm">
+        <form id="addForm" action="lib/dbaction.php?action=add" method="post">
             <label>Name</label>
             <input id="name" type="text" name="name" max=128 />
             <label>Address</label>
             <input id="addr1" type="text" name="addr1" max=128 />
-            <input id="addr2" type="text" name="adde2" max=128 />
+            <input id="addr2" type="text" name="addr2" max=128 />
             <label>State and Postcode</label>
             <select id="state" name="state">
                 <option value="NSW">New South Wales</option>
@@ -122,7 +164,7 @@ $sth->execute(
                 <option value="ACT">ACT</option>
                 <option value="NT">Northern Territory</option>
                 <option value="TAS">Tasmania</option>
-                <option value="WA">Western Australia</option>
+                <option value="WA" selected="selected">Western Australia</option>
             </select>
             <input id="pcode" type="text" name="pcode" max=4 />
             <label>Phone</label>
@@ -136,9 +178,9 @@ $sth->execute(
     <dialog id="search">
         <a onclick="$('#search').hide()"><img src="images/cross.png" /></a>
         <p>Use this form to search for a particular professional in the database.</p>
-        <form id="searchForm">
+        <form id="searchForm" action="index.php" method="get">
             <label>Name</label>
-            <input id="name" type="text" name="name" max=128 />
+            <input id="query" type="text" name="query" max=128 />
             <input id="submit" type="submit" value="Search database"/>
         </form>
     </dialog>

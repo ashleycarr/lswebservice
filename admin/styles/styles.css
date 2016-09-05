@@ -95,7 +95,7 @@ ASIDE
 ASIDE H2
 {
     font-weight: bold;
-    font-size:1.5xem;
+    font-size: 1.5em;
     padding: 1em 0em 1em 0em;
 }
 
@@ -200,17 +200,11 @@ DIALOG#search IMG
     width: 1.2em;
 }
 
-DIALOG Padminadmi
-{
-    display: block;
-    padding: 26px;
-}
-
 DIALOG#add,
 DIALOG#search
 {
     position: absolute;
-    top: 12em;
+    top: 7em;
     background-color: white;
     margin-left: auto;
     margin-right: auto;
@@ -250,6 +244,8 @@ FOOTER
     text-align: center;
     font-size: 10px;
     width: 100%;
+    position: absolute;
+    bottom: 0;
     margin: 1em 0em 0em 0em;
     padding: 3em 0em 2em 0em;
     /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ffffff+0,ffddde+100 */

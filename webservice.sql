@@ -28,8 +28,8 @@ CREATE TABLE healthcareLocations (
     INDEX (agentID),
     SPATIAL INDEX (location),
     FOREIGN KEY (agentID) 
-        REFERENCES healthcare_agents(id)
-        ON DELETE CASCADE
+    REFERENCES healthcareAgents (id)
+    ON DELETE CASCADE
 ) ENGINE=MyISAM;
 
 # Used to store admin users and password hashes.
@@ -41,11 +41,12 @@ CREATE TABLE adminUsers (
 ) ENGINE=MyISAM;
 
 # CREATE USER lsadmin - select delete update add from healthcare agents and locations
+# default is admin - admin
     
 INSERT INTO adminUsers VALUES (
     NULL,
     'admin',
-    'lsAdminPassword');
+    '$2y$10$FpMKykWxzwjetsxN1T5zNuKywJrTZOytgoKr8MO.rIRJEfGgi6Gb.');
 
 # lsguest user - allowed read access on healthcare locations and agents
 CREATE USER 'lsguest'@'localhost' IDENTIFIED BY 'lsguest';

@@ -55,19 +55,50 @@ class Geocoder
     {
         $url = "https://maps.googleapis.com/maps/api/geocode/json?" .
                "address=$address$this->region&key=$this->googleAPIKey";
-
+        
+        /*
+        // Curl method
         // fetch data from google geocode api.
         $curlh = curl_init();
         curl_setopt($curlh, CURLOPT_URL, $url);
         curl_setopt($curlh, CURLOPT_HEADER, 0);
         curl_setopt($curlh, CURLOPT_RETURNTRANSFER, true);
         $json = curl_exec($curlh);
-        curl_close($curlh);
         
         if ($json == false) {
-            throw new exception("Unable to contact Google web service: " .
-                                curl_error($curlh));
+            $error = curl_error($curlh);
+            curl_close($curlh);
+            throw new \Exception("Unable to contact Google web service: " .
+                                 $error);
         }
+        curl_close($curlh);
+        */
+        
+        
+        // Fopen method
+        $context = stream_context_create(
+            array(
+                'http' => array(
+                    'method' => "GET",
+                    'header' => "Accept-language: en\r\n"),
+                'ssl' => array(
+                    'verify_peer' => true,
+                    'CN_match' => 'google.com',
+                    'crypto_method' => STREAM_CRYPTO_METHOD_TLSv1_1_CLIENT |
+                                       STREAM_CRYPTO_METHOD_TLSv1_2_CLIENT,
+                    'disable_compression' => true)
+            )
+        );
+        
+        $stream = fopen($url, 'r', false, $context);
+        
+        $json = stream_get_contents($stream);
+        fclose($stream);
+        
+        if ($json == false) {
+            throw new \Exception("Unable to contact Google web service.");
+        }
+        
          // decode and return the json result object
         return(json_decode($json, true));
     }
@@ -110,19 +141,19 @@ class Geocoder
         
         // if the request failed, throw exception with google's error message.
         if ($this->APIRequestError($gObj)) {
-            throw new exception("Google Geocoding API failed with message: " .
-                                $gObj['error_message']);
+            throw new \Exception("Google Geocoding API failed with message: " .
+                $gObj['error_message']);
         }
         
         // if there are no results to show, the request failed.
         if (!isset($gObj['results'])) {
-            throw new exception("Google Geocoding API failed: " .
-                                "Malformed response with no error message.");
+            throw new \Exception("Google Geocoding API failed: " .
+                "Malformed response with no error message.");
         }
     
         if (isset($gObj['status']) && $gObj['status'] == "ZERO_RESULTS") {
-            throw new exception("Google Geocoding API failed: " .
-                                "Zero results returned from address lookup.");
+            throw new \Exception("Google Geocoding API failed: " .
+                "Zero results returned from address lookup.");
         }
         return(array(
             'latitude'  => $gObj['results'][0]['geometry']['location']['lat'],

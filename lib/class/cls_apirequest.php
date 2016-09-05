@@ -23,7 +23,7 @@ class Request
     public function __construct($code)
     {
         if (!$this->request = json_decode($code, true)) {
-            throw new exception(
+            throw new \Exception(
                 'APIRequest: Invalid JSON syntax in client request: ' .
                 json_last_error_msg() . strlen($code),
                 400
@@ -31,7 +31,7 @@ class Request
         }
         
         if (!$this->validRequest()) {
-            throw new exception(
+            throw new \Exception(
                 'APIRequest: Invalid client request format.',
                 400
             );
@@ -39,11 +39,11 @@ class Request
         
         if (!$this->validLatitude($this->request['lat']) ||
            !$this->validLongitude($this->request['lon'])) {
-            throw new exception('APIRequest: Invalid client coordinates.', 400);
+            throw new \Exception('APIRequest: Invalid client coordinates.', 400);
         }
         
         if (!$this->validNumResults($this->request['numResults'])) {
-            throw new exception(
+            throw new \Exception(
                 'APIRequest: Invalid number of results requested.',
                 400
             );

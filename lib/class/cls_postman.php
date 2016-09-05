@@ -56,7 +56,7 @@ class Postman
         foreach ($this->expectedHeaders as $key => $value) {
             if (!isset($headers[$key]) ||
                 $headers[$key] != $value) {
-                throw new exception("Unexpected $key in client " .
+                throw new \Exception("Unexpected $key in client " .
                                 "request: expected $value", 400);
             }
         }

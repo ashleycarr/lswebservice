@@ -74,8 +74,8 @@ function getClosestProfessionals($lat, $lon, $maxResults)
         $boundRange *= 2;
     }
     
-    if ($boundRange > 10) {
-        throw new exception('Search: Unable to find professionals' .
+    if ($boundRange > 10 && $sth->fetchColumn(0) <= 0) {
+        throw new \exception('Search: Unable to find professionals' .
                             ' within 1600kms of user.', 400);
     }
     

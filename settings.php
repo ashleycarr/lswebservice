@@ -16,4 +16,4 @@ define('LOCALDB_PASSWORD', 'lsguest');
 define('LOCALDB_DBNAME', 'lifesaver');
 
 // API settings
-define('MAX_RESULTS', 20);
+define('MAX_RESULTS', 5);
