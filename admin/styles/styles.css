@@ -239,13 +239,16 @@ SECTION NAV
     padding-bottom: 1em;
 }
 
+SECTION
+{
+    margin-bottom: 2em;
+}
+
 FOOTER
 {
     text-align: center;
     font-size: 10px;
     width: 100%;
-    position: absolute;
-    bottom: 0;
     margin: 1em 0em 0em 0em;
     padding: 3em 0em 2em 0em;
     /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ffffff+0,ffddde+100 */
