@@ -11,9 +11,6 @@
  * @link       https://github.com/ashleycarr/lswebservice */
 
 // Local MYSQL database settings
-define('LOCALDB_USERNAME', 'lsguest');
-define('LOCALDB_PASSWORD', 'lsguest');
-define('LOCALDB_DBNAME', 'lifesaver');
-
-// API settings
-define('MAX_RESULTS', 5);
+define('LOCALDB_USERNAME', 'lifesaverappspp');
+define('LOCALDB_PASSWORD', '1dHysCRizGp');
+define('LOCALDB_DBNAME', 'lifesaverappspp');

@@ -55,8 +55,7 @@ class Geocoder
     {
         $url = "https://maps.googleapis.com/maps/api/geocode/json?" .
                "address=$address$this->region&key=$this->googleAPIKey";
-        
-        /*
+
         // Curl method
         // fetch data from google geocode api.
         $curlh = curl_init();
@@ -72,34 +71,6 @@ class Geocoder
                                  $error);
         }
         curl_close($curlh);
-        */
-        
-        
-        // Fopen method
-        $context = stream_context_create(
-            array(
-                'http' => array(
-                    'method' => "GET",
-                    'header' => "Accept-language: en\r\n"),
-                'ssl' => array(
-                    'verify_peer' => true,
-                    'CN_match' => 'google.com',
-                    'crypto_method' => STREAM_CRYPTO_METHOD_TLSv1_1_CLIENT |
-                                       STREAM_CRYPTO_METHOD_TLSv1_2_CLIENT,
-                    'disable_compression' => true)
-            )
-        );
-        
-        $stream = fopen($url, 'r', false, $context);
-        
-        $json = stream_get_contents($stream);
-        fclose($stream);
-        
-        if ($json == false) {
-            throw new \Exception("Unable to contact Google web service.");
-        }
-        
-         // decode and return the json result object
         return(json_decode($json, true));
     }
     

@@ -36,11 +36,9 @@ function localDBConnect($dbName, $username, $password)
  * @param float $lon        Longitude of user
  * @param integer $maxResults maximum number of results to return
  */
-function getClosestProfessionals($lat, $lon, $maxResults)
+function getClosestProfessionals($dbh, $lat, $lon, $maxResults)
 {
     $startTime = microtime();
-    
-    $dbh = localDBConnect(LOCALDB_DBNAME, LOCALDB_USERNAME, LOCALDB_PASSWORD);
     
     // Find an appropriate search range with enough results.
     // ~250m radius to start.
@@ -50,8 +48,8 @@ function getClosestProfessionals($lat, $lon, $maxResults)
         SELECT COUNT(*)
         FROM `healthcareLocations`
         WHERE 
-            ST_INTERSECTS(location, ST_MakeEnvelope(
-            POINT(:lonMin, :latMin), POINT(:lonMax, :latMax)));
+            INTERSECTS(location, ENVELOPE(LINESTRING(
+            POINT(:lonMin, :latMin), POINT(:lonMax, :latMax))));
     ');
     
     //  Maximum search is 16 degrees lat/lon, or approximately 1600kms
@@ -83,14 +81,14 @@ function getClosestProfessionals($lat, $lon, $maxResults)
     $sth = $dbh->prepare('
         SELECT a.id as id, a.name AS name, a.address AS address, 
         a.phone AS phone, a.email AS email, 
-        ST_Y(l.location) AS latitude, ST_X(l.location) AS longitude,
-        ST_Distance_Sphere(POINT(:userLon, :userLat), l.location) AS dist
+        Y(l.location) AS latitude, X(l.location) AS longitude,
+        HAVERSINE(:userLon, :userLat, X(l.location), Y(l.location)) AS dist
         FROM `healthcareLocations` AS l
         INNER JOIN `healthcareAgents` AS a
             ON l.agentID = a.id
         WHERE 
-            ST_INTERSECTS(l.location, ST_MakeEnvelope(
-            POINT(:lonMin, :latMin), POINT(:lonMax, :latMax)))
+            INTERSECTS(l.location, ENVELOPE(LINESTRING(
+            POINT(:lonMin, :latMin), POINT(:lonMax, :latMax))))
         ORDER BY dist ASC LIMIT :maxResults;
         ');
     

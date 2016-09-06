@@ -9,9 +9,9 @@
 define('GOOGLE_GEOAPIKEY', "AIzaSyBpN0BcxFtmFKVteFgwsR6w5LQbz3NPioY");
 
 // Local MYSQL database settings
-define('LOCALDB_USERNAME', 'lsadmin');
-define('LOCALDB_PASSWORD', 'k8U7Bn#maTrAq@FULv6%bhVqQLR*CpGz');
-define('LOCALDB_DBNAME', 'lifesaver');
+define('LOCALDB_USERNAME', 'lifesaverappspp');
+define('LOCALDB_PASSWORD', '1dHysCRizGp');
+define('LOCALDB_DBNAME', 'lifesaverappspp');
 
 // 30 life saver professionals per page.
 define('ADMIN_RESULTSPERPAGE', 30);

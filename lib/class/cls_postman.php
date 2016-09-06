@@ -14,9 +14,6 @@ namespace Lifesaver\APIHandlers;
 
 class Postman
 {
-    private $expectedHeaders;
-    
-    
     /**
      * Receives the client post request and returns an apiRequest object.
      */
@@ -52,14 +49,7 @@ class Postman
      */
     private function validateRequestHeaders()
     {
-        $headers = apache_request_headers();
-        foreach ($this->expectedHeaders as $key => $value) {
-            if (!isset($headers[$key]) ||
-                $headers[$key] != $value) {
-                throw new \Exception("Unexpected $key in client " .
-                                "request: expected $value", 400);
-            }
-        }
+        return($_SERVER["CONTENT_TYPE"] == 'application/json');
     }
     
     

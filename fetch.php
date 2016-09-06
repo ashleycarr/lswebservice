@@ -19,27 +19,39 @@ require_once('lib/class/cls_apiresponse.php');
 require_once('lib/lib_lifesaver.php');
 require_once('settings.php');
 
+error_reporting(-1);
+ini_set('display_errors', 'On');
+
 $postmaster = new APIHandlers\postman();
 
 try {
     // fetch client posted request.
-    $postmaster->setExpectedHeaders(array('Content-Type' => 'application/json'));
     $request = $postmaster->getClientRequest();
     $parameters = $request->getRequestParameters();
     
     // generate response
+    $dbh = Library\localDBConnect(
+        LOCALDB_DBNAME,
+        LOCALDB_USERNAME,
+        LOCALDB_PASSWORD
+    );
+    
     $response = new APIHandlers\Response(
         Library\getClosestProfessionals(
+            $dbh,
             $parameters['lat'],
             $parameters['lon'],
             $parameters['numResults']
         )
     );
     
+    unset($dbh);
+    
     // send good headers and response json
     $postmaster->sendHeaders(200);
     $postmaster->sendJSONContentTypeHeader();
     $postmaster->sendClientResponse($response);
+    
 } catch (exception $e) {
     // on error, send JSON error message
     $postmaster->sendHeaders($e->getCode());
