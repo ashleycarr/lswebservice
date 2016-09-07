@@ -2,31 +2,40 @@
 
 use PHPUnit\Framework\TestCase;
 require_once('settings.php');
-require_once(LIB_DIRECTORY . 'lib_lifesaver.php');
-
-// Local MYSQL database settings
-define('LOCALDB_USERNAME', 'lsguest');
-define('LOCALDB_PASSWORD', 'lsguest');
-define('LOCALDB_DBNAME', 'lifesaver');
+require_once(ADMIN_LIB_DIRECTORY . 'class/cls_geocoder.php');
+define('GOOGLE_GEOAPIKEY', "AIzaSyBpN0BcxFtmFKVteFgwsR6w5LQbz3NPioY");
 
 class APIRequestTest extends TestCase
 {
-    public function testValidLookup()
+    public function test_ValidLookup()
     {
-        $dbh = Lifesaver\Library\localDBConnect(
-            LOCALDB_DBNAME,
-            LOCALDB_USERNAME,
-            LOCALDB_PASSWORD
-        );
+        $geocoder = new Lifesaver\APIHandlers\Geocoder(GOOGLE_GEOAPIKEY);
+        $geocoder->setRegion("au");
 
-        $response = Lifesaver\Library\getClosestProfessionals(
-            $dbh,
-            -31.8909840,
-            115.7871080,
-            5
-        );
-        
-        $this->assertArrayHasKey('results', $response);
-        $this->assertArrayHasKey('statistics', $response);
+        $address = '321A Huntriss Road Doubleview WA 6018';
+        $location = $geocoder->getCoordinatesOfStreetAddress($address);
+
+        $this->assertArrayHasKey('latitude', $location);
+        $this->assertArrayHasKey('longitude', $location);
+        $this->assertEquals(-31.900939999999991, $location['latitude']);
+        $this->assertEquals(115.78668, $location['longitude']);
+    }
+    
+    public function test_InvalidAPIKey()
+    {
+        $this->expectException(exception::class);
+        $geocoder = new Lifesaver\APIHandlers\Geocoder('THE_WRONG_API_KEY');
+        $geocoder->setRegion("au");
+        $address = '321A Huntriss Road Doubleview WA 6018';
+        $location = $geocoder->getCoordinatesOfStreetAddress($address);
+    }
+    
+    public function test_InvalidStreetAddress()
+    {
+        $this->expectException(exception::class);
+        $geocoder = new Lifesaver\APIHandlers\Geocoder(GOOGLE_GEOAPIKEY);
+        $geocoder->setRegion("au");
+        $address = '4000 Not a real street in some neighborhood that doesnt exist';
+        $location = $geocoder->getCoordinatesOfStreetAddress($address);
     }
 }

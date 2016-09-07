@@ -32,15 +32,14 @@ function localDBConnect($dbName, $username, $password)
 
 /**
  * returns an assoc array of the closest professionals to the user
- * @param float $lat        Latitiude of user
- * @param float $lon        Longitude of user
+ * @param pdo     $dbh        PDO object
+ * @param float   $lat        Latitiude of user
+ * @param float   $lon        Longitude of user
  * @param integer $maxResults maximum number of results to return
  */
-function getClosestProfessionals($lat, $lon, $maxResults)
+function getClosestProfessionals($dbh, $lat, $lon, $maxResults)
 {
     $startTime = microtime();
-    
-    $dbh = localDBConnect(LOCALDB_DBNAME, LOCALDB_USERNAME, LOCALDB_PASSWORD);
     
     // Find an appropriate search range with enough results.
     // ~250m radius to start.

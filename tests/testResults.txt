@@ -1,0 +1,33 @@
+
+------------------------------------
+Testing API Request Handler
+------------------------------------
+PHPUnit 5.5.4 by Sebastian Bergmann and contributors.
+
+.....                                                               5 / 5 (100%)
+
+Time: 80 ms, Memory: 10.00MB
+
+OK (5 tests, 10 assertions)
+
+------------------------------------
+Testing Professional DB lookup
+------------------------------------
+PHPUnit 5.5.4 by Sebastian Bergmann and contributors.
+
+.                                                                   1 / 1 (100%)
+
+Time: 79 ms, Memory: 10.00MB
+
+OK (1 test, 2 assertions)
+
+------------------------------------
+Testing Google Geocode module
+------------------------------------
+PHPUnit 5.5.4 by Sebastian Bergmann and contributors.
+
+...                                                                 3 / 3 (100%)
+
+Time: 3.08 seconds, Memory: 10.00MB
+
+OK (3 tests, 6 assertions)

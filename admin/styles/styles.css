@@ -1,3 +1,23 @@
+/*+clearfix {*/
+TABLE:after,
+SECTION:after
+{
+    content: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+    font-size: 0;
+}
+
+TABLE,
+SECTION
+{
+    display: block;
+    *height: 1px;
+}
+
+/*+}*/
 HTML
 {
     font-family: verdana, arial, sans-serif;
@@ -99,6 +119,7 @@ ASIDE H2
     padding: 1em 0em 1em 0em;
 }
 
+/*[clearfix]*/
 TABLE
 {
     border-collapse: collapse;
@@ -239,9 +260,10 @@ SECTION NAV
     padding-bottom: 1em;
 }
 
+/*[clearfix]*/
 SECTION
 {
-    margin-bottom: 2em;
+    margin-bottom: 1em;
 }
 
 FOOTER
@@ -249,17 +271,7 @@ FOOTER
     text-align: center;
     font-size: 10px;
     width: 100%;
-    margin: 1em 0em 0em 0em;
-    padding: 3em 0em 2em 0em;
-    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ffffff+0,ffddde+100 */
-    background: rgb(255, 255, 255);
-    /* Old browsers */
-    background: -moz-linear-gradient(top, rgba(255, 255, 255, 1) 0%, rgba(255, 221, 222, 1) 100%);
-    /* FF3.6-15 */
-    background: -webkit-linear-gradient(top, rgba(255, 255, 255, 1) 0%, rgba(255, 221, 222, 1) 100%);
-    /* Chrome10-25,Safari5.1-6 */
-    background: linear-gradient(to bottom, rgba(255, 255, 255, 1) 0%, rgba(255, 221, 222, 1) 100%);
-    /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ffddde',GradientType=0 );
-    /* IE6-9 */
+    height: 4em;
+    margin: 0em 0em 0em 0em;
+    padding: 4em 0em 0em 0em;
 }
