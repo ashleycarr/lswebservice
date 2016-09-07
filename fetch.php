@@ -19,9 +19,8 @@ require_once('lib/class/cls_apiresponse.php');
 require_once('lib/lib_lifesaver.php');
 require_once('settings.php');
 
-$postmaster = new APIHandlers\postman();
-
 try {
+    $postmaster = new APIHandlers\postman();
     // fetch client posted request.
     $postmaster->setExpectedHeaders(array('Content-Type' => 'application/json'));
     $request = $postmaster->getClientRequest();
@@ -40,7 +39,7 @@ try {
     $postmaster->sendHeaders(200);
     $postmaster->sendJSONContentTypeHeader();
     $postmaster->sendClientResponse($response);
-} catch (exception $e) {
+} catch (\exception $e) {
     // on error, send JSON error message
     $postmaster->sendHeaders($e->getCode());
     $postmaster->sendJSONContentTypeHeader();
