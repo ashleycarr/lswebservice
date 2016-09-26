@@ -1,4 +1,7 @@
-#lswebservice
+#Life Saver Web Service and Administration
+
+![Lifesaver](https://github.com/ashleycarr/lswebservice/blob/master/admin/images/lifesaverlogo.png)
+
 ##Overview
 This repository contains the web-service for the Lifesaver project.  This was completed for the University of Western Australia's major CITS3200 assignment.
 
