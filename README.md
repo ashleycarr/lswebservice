@@ -11,5 +11,7 @@ There are three main parts to this project.  The first being an web administrati
 
 This repository is for the web service and web administration elements to this project.
 
+For more detailed documentation, please see the [Wiki](https://github.com/ashleycarr/lswebservice/wiki).
+
 ##About
 The web service and web administration portion of the assignment was written by Ashley Carr (21591371).  Feel free to email me directly should there be any issues with the code at [21591371@student.uwa.edu.au](mailto:21591371@student.uwa.edu.au).
