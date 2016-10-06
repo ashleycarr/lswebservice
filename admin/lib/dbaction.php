@@ -81,10 +81,11 @@ if ($_GET["action"] == 'add') {
                 ':latitude' => $location['latitude'])
         );
     } catch (exception $e) {
-        
+        header('Location: ../index.php?message=3');
+        exit;
     }
     
-    header('Location: ../index.php');
+    header('Location: ../index.php?message=0');
     exit;
 }
 
@@ -144,10 +145,11 @@ if ($_GET["action"] == 'update') {
                 ':id' => $_POST['id'])
         );
     } catch (exception $e) {
-        
+        header('Location: ../index.php?message=4');
+        exit;
     }
     
-    header('Location: ../index.php');
+    header('Location: ../index.php?message=1');
     exit;
 }
 
@@ -171,9 +173,9 @@ if ($_GET["action"] == 'delete') {
         header('Location: ../index.php');
         exit;
     }
-    header('Location: ../index.php');
+    header('Location: ../index.php?message=5');
     exit;
 }
 
-header('Location: ../index.php');
+header('Location: ../index.php?message=2');
 exit;

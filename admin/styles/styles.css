@@ -119,6 +119,25 @@ ASIDE H2
     padding: 1em 0em 1em 0em;
 }
 
+ASIDE H3
+{
+    text-align: center;
+    margin-top: 3em;
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+
+ASIDE H3.badmsg
+{
+    color: red;
+}
+
+ASIDE H3.goodmsg
+{
+    color: green;
+}
+
 /*[clearfix]*/
 TABLE
 {

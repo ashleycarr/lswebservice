@@ -24,6 +24,13 @@ $dbh = Library\localDBConnect(
     LOCALDB_PASSWORD
 );
 
+$message = array("Professional successfully added to the database.",
+                 "Professional successfully updated.",
+                 "Professional successfully deleted from the database.",
+                 "Unable to add professional, error encountered.  Please try again later.",
+                 "Unable to update professional, error encountered.  Please try again later.",
+                 "Unable to delete professional, error encountered.  Please try again later.");
+
 // Fetch healthcareAgents
 if (isset($_GET['query'])) {
     $sth = $dbh->prepare('
@@ -147,7 +154,15 @@ unset($sthFoundRows);
 	<aside>
 		<h2>LifeSaver professionals</h2>
 		<p>This page alows you to browse, add, edit and delete professionals in the database.</p>
-	</aside>
+    <?php
+            if (isset($_GET['message'])  && $_GET['message'] != '' && isset($message[$_GET['message']])) {
+                if($_GET['message'] > 2) {
+                    $class = 'badmsg';
+                } else {
+                    $class = 'goodmsg';
+                }
+            echo('    <h3 class="' . $class . '">' . $message[$_GET['message']] . "</h3>\n");
+        }?></aside>
 	
 	<section>
         <nav>
