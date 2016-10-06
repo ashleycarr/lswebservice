@@ -44,7 +44,7 @@ $_SESSION['user']->setLastActivity();
     
 	<aside>
 		<h2>LifeSaver administration site help</h2>
-		<p>This page alows you to browse, add, edit and delete professionals in the database.</p>
+		<p>This page contains the help documentation for the administration website.</p>
 	</aside>
 	
 	<section id='help'>
