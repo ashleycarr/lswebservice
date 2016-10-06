@@ -138,7 +138,7 @@ unset($sthFoundRows);
                 } else {
                     echo("<li><a onclick=\"windowToggle('#search')\">Search Professionals</a></li>");
                 } ?>
-                <li><a href="index.html">Help</a></li>
+                <li><a href="help.php">Help</a></li>
 			</ul>
 		</nav>
 	</header>
