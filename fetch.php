@@ -25,15 +25,19 @@ try {
     $postmaster->setExpectedHeaders(array('Content-Type' => 'application/json'));
     $request = $postmaster->getClientRequest();
     $parameters = $request->getRequestParameters();
-    
+
     // generate response
-    
     // insert into db
     $dbh = Library\localDBConnect(
         LOCALDB_DBNAME,
         LOCALDB_USERNAME,
         LOCALDB_PASSWORD
     );
+    
+    $mysqlVersion = $dbh->query('select version()')->fetchColumn();
+    $mysqlVersion = $mysqlVersion[2];
+    
+    require_once('lib/lib_lifesaver_5.' . $mysqlVersion . 'x.php');
     
     $response = new APIHandlers\Response(
         Library\getClosestProfessionals(

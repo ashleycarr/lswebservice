@@ -82,6 +82,44 @@ unset($sthFoundRows);
     <link rel="stylesheet" href="styles\clear.css">
     <link rel="stylesheet" href="styles\styles.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script type="text/javascript">
+        function windowToggle(element)
+        {
+            var makeVisible = false;
+            
+            if($(element).is(':hidden')) {
+                makeVisible = true;
+            }
+            
+            $('#add').hide();
+            $('#edit').hide();
+            $('#search').hide();
+            
+            if(makeVisible == true) {
+                $(element).show();
+            }
+        }
+        
+        function editProfessional(tableRow)
+        {
+            var tableValues = [];
+
+            $(tableRow).children('td').each(function() {
+                tableValues.push($(this).text());
+            });
+            
+            $("#edit input[name='id']").val(tableValues[0]);
+            $("#edit input[name='name']").val(tableValues[1]);
+            $("#edit input[name='addr1']").val(tableValues[2]);
+            $("#edit input[name='addr2']").val(tableValues[3]);
+            $('#edit select option[value=' + tableValues[4] + ']').attr('selected','selected');
+            $("#edit input[name='pcode']").val(tableValues[5]);
+            $("#edit input[name='phone']").val(tableValues[6]);
+            $("#edit input[name='email']").val(tableValues[7]);
+            
+            windowToggle('#edit');
+        }
+    </script>
 </head>
 
 <body>
@@ -93,12 +131,12 @@ unset($sthFoundRows);
         </p>
 		<nav>
 			<ul>
-                <li><a onclick="$('#search').hide(); $('#edit').hide(); $('#add').toggle();">Add Professional</a></li>
+                <li><a onclick="windowToggle('#add')">Add Professional</a></li>
                 <?php
                 if(isset($_GET['query'])) {
                     echo("<li><a href=\"index.php\">All Professionals</a></li>");
                 } else {
-                    echo("<li><a onclick=\"$('#edit').hide(); $('#add').hide(); $('#search').toggle();\">Search Professionals</a></li>");
+                    echo("<li><a onclick=\"windowToggle('#search')\">Search Professionals</a></li>");
                 } ?>
                 <li><a href="index.html">Help</a></li>
 			</ul>
@@ -126,8 +164,12 @@ unset($sthFoundRows);
         </nav>
         <table>
             <tr>
+                <td>ID</td>
                 <td>Name</td>
-                <td>Address</td>
+                <td>Address1</td>
+                <td>Address2</td>
+                <td>State</td>
+                <td>Postcode</td>
                 <td>Phone</td>
                 <td>Email</td>
                 <td>Options</td>
@@ -135,11 +177,16 @@ unset($sthFoundRows);
             <?php
             foreach ($sth as $row) {
             ?><tr>
+                <td><?=$row['id']?></td>
                 <td><?=$row['name']?></td>
-                <td><?=$row['address']?></td>
+                <td><?=$row['address1']?></td>
+                <td><?=$row['address2']?></td>
+                <td><?=$row['state']?></td>
+                <td><?=$row['postcode']?></td>
                 <td><?=$row['phone']?></td>
                 <td><?=$row['email']?></td>
                 <td>
+                    <a onclick="editProfessional(this.closest('tr'))"><img src="images/edit.png" /></a>
                     <a href="lib/dbaction.php?action=delete&id=<?=$row['id']?>"><img src="images/trash.png" /></a>
                 </td>
             </tr>
@@ -152,12 +199,12 @@ unset($sthFoundRows);
         <p>Use this form to add a professional to the database.</p>
         <form id="addForm" action="lib/dbaction.php?action=add" method="post">
             <label>Name</label>
-            <input id="name" type="text" name="name" max=128 />
+            <input type="text" name="name" max=128 />
             <label>Address</label>
-            <input id="addr1" type="text" name="addr1" max=128 />
-            <input id="addr2" type="text" name="addr2" max=128 />
+            <input type="text" name="addr1" max=128 />
+            <input type="text" name="addr2" max=128 />
             <label>State and Postcode</label>
-            <select id="state" name="state">
+            <select class="state" name="state">
                 <option value="NSW">New South Wales</option>
                 <option value="QLD">Queensland</option>
                 <option value="VIC">Victoria</option>
@@ -166,12 +213,41 @@ unset($sthFoundRows);
                 <option value="TAS">Tasmania</option>
                 <option value="WA" selected="selected">Western Australia</option>
             </select>
-            <input id="pcode" type="text" name="pcode" max=4 />
+            <input class="pcode" type="text" name="pcode" max=4 />
             <label>Phone</label>
-            <input id="phone" type="text" name="phone" max=10 />
+            <input type="text" name="phone" max=10 />
             <label>Email</label>
-            <input id="email" type="text" name="email" max=254 />
-            <input id="submit" type="submit" value="Add to database"/>
+            <input type="text" name="email" max=254 />
+            <input type="submit" value="Add to database"/>
+        </form>
+    </dialog>
+    
+    <dialog id="edit">
+        <a onclick="$('#edit').hide()"><img src="images/cross.png" /></a>
+        <p>Edit this professional.</p>
+        <form id="editForm" action="lib/dbaction.php?action=update" method="post">
+            <input type="hidden" name="id">
+            <label>Name</label>
+            <input type="text" name="name" max=128 />
+            <label>Address</label>
+            <input type="text" name="addr1" max=128 />
+            <input type="text" name="addr2" max=128 />
+            <label>State and Postcode</label>
+            <select class="state" name="state">
+                <option value="NSW">New South Wales</option>
+                <option value="QLD">Queensland</option>
+                <option value="VIC">Victoria</option>
+                <option value="ACT">ACT</option>
+                <option value="NT">Northern Territory</option>
+                <option value="TAS">Tasmania</option>
+                <option value="WA">Western Australia</option>
+            </select>
+            <input class="pcode" type="text" name="pcode" max=4 />
+            <label>Phone</label>
+            <input type="text" name="phone" max=10 />
+            <label>Email</label>
+            <input type="text" name="email" max=254 />
+            <input type="submit" value="Update Professional"/>
         </form>
     </dialog>
     
@@ -180,8 +256,8 @@ unset($sthFoundRows);
         <p>Use this form to search for a particular professional in the database.</p>
         <form id="searchForm" action="index.php" method="get">
             <label>Name</label>
-            <input id="query" type="text" name="query" max=128 />
-            <input id="submit" type="submit" value="Search database"/>
+            <input type="text" name="query" max=128 />
+            <input type="submit" value="Search database"/>
         </form>
     </dialog>
 

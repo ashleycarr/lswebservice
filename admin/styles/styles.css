@@ -202,8 +202,8 @@ DIALOG FORM SELECT
     padding-left: 10px;
 }
 
-DIALOG SELECT#state,
-DIALOG INPUT#pcode
+DIALOG SELECT.state,
+DIALOG INPUT.pcode
 {
     width: 10em;
 }
@@ -214,7 +214,8 @@ DIALOG FORM
 }
 
 DIALOG#add IMG,
-DIALOG#search IMG
+DIALOG#search IMG,
+DIALOG#edit IMG
 {
     float: right;
     display: inline;
@@ -222,7 +223,8 @@ DIALOG#search IMG
 }
 
 DIALOG#add,
-DIALOG#search
+DIALOG#search,
+DIALOG#edit
 {
     position: absolute;
     top: 7em;

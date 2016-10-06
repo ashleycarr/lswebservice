@@ -55,13 +55,16 @@ if ($_GET["action"] == 'add') {
 
         $sth = $dbh->prepare('
             INSERT INTO `healthcareAgents`
-                (`id`, `name`, `address`, `phone`, `email`)
-                VALUES (NULL, :name, :address, :phone, :email)');
+                (`id`, `name`, `address1`, `address2`, `state`, `postcode`, `phone`, `email`)
+                VALUES (NULL, :name, :address1, :address2, :state, :postcode, :phone, :email)');
 
         $sth->execute(
             array(
                 ':name' => $_POST['name'],
-                ':address' => $address,
+                ':address1' => $_POST['addr1'],
+                ':address2' => $_POST['addr2'],
+                ':state' => $_POST['state'],
+                ':postcode' => $_POST['pcode'],
                 ':phone' => $phone,
                 ':email' => $_POST['email'])
         );
@@ -76,6 +79,69 @@ if ($_GET["action"] == 'add') {
                 ':id' => $dbh->lastInsertId(),
                 ':longitude' => $location['longitude'],
                 ':latitude' => $location['latitude'])
+        );
+    } catch (exception $e) {
+        
+    }
+    
+    header('Location: ../index.php');
+    exit;
+}
+
+if ($_GET["action"] == 'update') {
+    try {
+        
+        // fetch latitude and longitude for address
+        $geocoder = new APIHandlers\Geocoder(GOOGLE_GEOAPIKEY);
+        $geocoder->setRegion("au");
+
+        $address =
+            $_POST['addr1'] . " " .
+            $_POST['addr2'] . " " .
+            $_POST['state'] . " " .
+            $_POST['pcode'];
+        
+        $location = $geocoder->getCoordinatesOfStreetAddress($address);
+
+        // remove phone number formatting
+        $phone = preg_replace('/[^0-9\,\-]/', '', $_POST['phone']);
+
+        // insert into db
+        $dbh = Library\localDBConnect(
+            LOCALDB_DBNAME,
+            LOCALDB_USERNAME,
+            LOCALDB_PASSWORD
+        );
+
+        $sth = $dbh->prepare('
+            UPDATE `healthcareAgents` SET
+                `name` = :name, `address1` = :address1, `address2` = :address2,
+                `state` = :state, `postcode` = :postcode, `phone` = :phone,
+                `email` = :email
+                WHERE id = :id');
+
+        $sth->execute(
+            array(
+                ':name' => $_POST['name'],
+                ':address1' => $_POST['addr1'],
+                ':address2' => $_POST['addr2'],
+                ':state' => $_POST['state'],
+                ':postcode' => $_POST['pcode'],
+                ':phone' => $phone,
+                ':email' => $_POST['email'],
+                ':id' => $_POST['id'])
+        );
+
+        $sth = $dbh->prepare('
+            UPDATE `healthcareLocations`
+                SET `location` = POINT(:longitude, :latitude)
+                WHERE agentid = :id');
+
+        $sth->execute(
+            array(
+                ':longitude' => $location['longitude'],
+                ':latitude' => $location['latitude'],
+                ':id' => $_POST['id'])
         );
     } catch (exception $e) {
         

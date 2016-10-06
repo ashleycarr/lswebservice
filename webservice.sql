@@ -13,7 +13,10 @@ DROP USER 'lsadmin'@'localhost';
 CREATE TABLE healthcareAgents (
     id INT AUTO_INCREMENT,
     name VARCHAR(128) DEFAULT NULL,
-    address VARCHAR(128) NOT NULL,
+    address1 VARCHAR(128) NOT NULL,
+    address2 VARCHAR(128) NOT NULL,
+    state VARCHAR(5) NOT NULL,
+    postcode INT(4) NOT NULL,
     phone VARCHAR(15) NOT NULL,
     email VARCHAR(254),
     PRIMARY KEY (id)
