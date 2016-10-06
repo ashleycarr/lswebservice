@@ -166,8 +166,8 @@ unset($sthFoundRows);
             <tr>
                 <td>ID</td>
                 <td>Name</td>
-                <td>Address1</td>
-                <td>Address2</td>
+                <td>Address 1</td>
+                <td>Address 2</td>
                 <td>State</td>
                 <td>Postcode</td>
                 <td>Phone</td>
@@ -200,8 +200,9 @@ unset($sthFoundRows);
         <form id="addForm" action="lib/dbaction.php?action=add" method="post">
             <label>Name</label>
             <input type="text" name="name" max=128 />
-            <label>Address</label>
+            <label>Address Details: Floor, shop, company name etc</label>
             <input type="text" name="addr1" max=128 />
+            <label>Street Address:</label>
             <input type="text" name="addr2" max=128 />
             <label>State and Postcode</label>
             <select class="state" name="state">
@@ -229,8 +230,9 @@ unset($sthFoundRows);
             <input type="hidden" name="id">
             <label>Name</label>
             <input type="text" name="name" max=128 />
-            <label>Address</label>
+            <label>Address Details: Floor, shop, company name etc</label>
             <input type="text" name="addr1" max=128 />
+            <label>Street Address:</label>
             <input type="text" name="addr2" max=128 />
             <label>State and Postcode</label>
             <select class="state" name="state">
