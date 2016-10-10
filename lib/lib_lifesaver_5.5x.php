@@ -49,20 +49,18 @@ function getClosestProfessionals($dbh, $lat, $lon, $maxResults)
         // If there are enough results to work with, use this range.
         $found = $sth->fetchColumn(0);
         
-        if ($found >= $maxResults) {
-            break;
-        }
-        
         if ($found > 0) {
             $foundResults = true;
+        }
+        
+        if ($found >= $maxResults) {
+            break;
         }
         
         // Otherwise, lets try doubling the search area.
         $boundRange *= 2;
     }
-    
-    echo $boundRange;
-    
+
     if (!$foundResults) {
         throw new \exception('Search: Unable to find professionals' .
                              ' within 900kms of user.', 400);
@@ -72,7 +70,7 @@ function getClosestProfessionals($dbh, $lat, $lon, $maxResults)
     $sth = $dbh->prepare('
         SELECT a.id as id, a.name AS name, a.address1 AS address1,
         a.address2 AS address2, a.state AS state,
-        a.postcode AS postcode, a.phone AS phone, a.email AS email, 
+        a.postcode AS postcode, a.phone AS phone, a.email AS email,
         Y(l.location) AS latitude, X(l.location) AS longitude,
         HAVERSINE(:userLon, :userLat, X(l.location), Y(l.location)) AS dist
         FROM `healthcareLocations` AS l

@@ -63,21 +63,21 @@ $sth->bindValue(':pageSize', ADMIN_RESULTSPERPAGE);
 $sth->execute();
 
 // Check if we're on the last page.
-$sthFoundRows = $dbh->query('SELECT FOUND_ROWS()');
+$sthFoundRows = $dbh->query('SELECT COUNT(*) FROM healthcareAgents');
+$numRows = $sthFoundRows->fetchColumn(0);
+unset($sthFoundRows);
 
 // if we're on an invalid page.
-if(ADMIN_RESULTSPERPAGE * $page > $sthFoundRows->fetchColumn(0)) {
+if(ADMIN_RESULTSPERPAGE * $page > $numRows) {
     header('Location: index.php');
 }
 
-if(ADMIN_RESULTSPERPAGE * ($page + 1) > $sthFoundRows->fetchColumn(0))
+if(ADMIN_RESULTSPERPAGE * ($page + 1) > $numRows)
 {
     $lastPage = true;
 } else {
     $lastPage = false;
 }
-
-unset($sthFoundRows);
 
 ?><!DOCTYPE HTML>
 
@@ -89,44 +89,7 @@ unset($sthFoundRows);
     <link rel="stylesheet" href="styles\clear.css">
     <link rel="stylesheet" href="styles\styles.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-    <script type="text/javascript">
-        function windowToggle(element)
-        {
-            var makeVisible = false;
-            
-            if($(element).is(':hidden')) {
-                makeVisible = true;
-            }
-            
-            $('#add').hide();
-            $('#edit').hide();
-            $('#search').hide();
-            
-            if(makeVisible == true) {
-                $(element).show();
-            }
-        }
-        
-        function editProfessional(tableRow)
-        {
-            var tableValues = [];
-
-            $(tableRow).children('td').each(function() {
-                tableValues.push($(this).text());
-            });
-            
-            $("#edit input[name='id']").val(tableValues[0]);
-            $("#edit input[name='name']").val(tableValues[1]);
-            $("#edit input[name='addr1']").val(tableValues[2]);
-            $("#edit input[name='addr2']").val(tableValues[3]);
-            $('#edit select option[value=' + tableValues[4] + ']').attr('selected','selected');
-            $("#edit input[name='pcode']").val(tableValues[5]);
-            $("#edit input[name='phone']").val(tableValues[6]);
-            $("#edit input[name='email']").val(tableValues[7]);
-            
-            windowToggle('#edit');
-        }
-    </script>
+    <script src="scripts/lib.js"></script>
 </head>
 
 <body>
@@ -141,9 +104,9 @@ unset($sthFoundRows);
                 <li><a onclick="windowToggle('#add')">Add Professional</a></li>
                 <?php
                 if(isset($_GET['query'])) {
-                    echo("<li><a href=\"index.php\">All Professionals</a></li>");
+                    echo("<li><a href=\"index.php\">All Professionals</a></li>\n");
                 } else {
-                    echo("<li><a onclick=\"windowToggle('#search')\">Search Professionals</a></li>");
+                    echo("<li><a onclick=\"windowToggle('#search')\">Search Professionals</a></li>\n");
                 } ?>
                 <li><a href="help.php">Help</a></li>
 			</ul>
@@ -165,19 +128,24 @@ unset($sthFoundRows);
         }?></aside>
 	
 	<section>
+        <?php
+        if($page > 0 || !$lastPage) { ?>
         <nav>
-            <ul>
-                <?php
+            <ul><?php
                 if ($page > 0) {
-                    echo("<li><a href=\"?page=<?=$page-1?>\">prev</a></li>");
-                } ?>
-                <?php
+                    echo("\n                <li><a href=\"index.php?page=");
+                    echo($page - 1);
+                    echo("\">prev</a></li>\n");
+                }
+                
                 if (!$lastPage) {
-                    echo("<li><a href=\"?page=<?=$page+1?>\">next</a></li>");
+                    echo("\n                <li><a href=\"index.php?page=");
+                    echo($page + 1);
+                    echo("\">next</a></li>\n");
                 } ?>
             </ul>
         </nav>
-        <table>
+        <?php } ?><table>
             <tr>
                 <td>ID</td>
                 <td>Name</td>
@@ -189,9 +157,9 @@ unset($sthFoundRows);
                 <td>Email</td>
                 <td>Options</td>
             </tr>
-            <?php
+        <?php
             foreach ($sth as $row) {
-            ?><tr>
+        ?>    <tr>
                 <td><?=$row['id']?></td>
                 <td><?=$row['name']?></td>
                 <td><?=$row['address1']?></td>
@@ -205,16 +173,15 @@ unset($sthFoundRows);
                     <a href="lib/dbaction.php?action=delete&id=<?=$row['id']?>"><img src="images/trash.png" /></a>
                 </td>
             </tr>
-            <?php } ?>
-        </table>
+        <?php } ?></table>
 	</section>
     
     <dialog id="add">
-        <a onclick="$('#add').hide()"><img src="images/cross.png" /></a>
+        <a onclick="windowToggle('#add')"><img src="images/cross.png" /></a>
         <p>Use this form to add a professional to the database.</p>
         <form id="addForm" action="lib/dbaction.php?action=add" method="post">
             <label>Name</label>
-            <input type="text" name="name" max=128 />
+            <input class="setFocus" type="text" name="name" max=128 />
             <label>Address Details: Floor, shop, company name etc</label>
             <input type="text" name="addr1" max=128 />
             <label>Street Address:</label>
@@ -239,7 +206,7 @@ unset($sthFoundRows);
     </dialog>
     
     <dialog id="edit">
-        <a onclick="$('#edit').hide()"><img src="images/cross.png" /></a>
+        <a onclick="windowToggle('#edit')"><img src="images/cross.png" /></a>
         <p>Edit this professional.</p>
         <form id="editForm" action="lib/dbaction.php?action=update" method="post">
             <input type="hidden" name="id">
@@ -269,11 +236,11 @@ unset($sthFoundRows);
     </dialog>
     
     <dialog id="search">
-        <a onclick="$('#search').hide()"><img src="images/cross.png" /></a>
+        <a onclick="windowToggle('#search')"><img src="images/cross.png" /></a>
         <p>Use this form to search for a particular professional in the database.</p>
         <form id="searchForm" action="index.php" method="get">
             <label>Name</label>
-            <input type="text" name="query" max=128 />
+            <input class="setFocus" type="text" name="query" max=128 />
             <input type="submit" value="Search database"/>
         </form>
     </dialog>

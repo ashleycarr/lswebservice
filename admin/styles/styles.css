@@ -107,6 +107,11 @@ FOOTER
     padding: 0em;
 }
 
+SECTION
+{
+    min-width: 1050px;
+}
+
 ASIDE
 {
     padding: 2em;
@@ -126,7 +131,6 @@ ASIDE H3
     font-weight: bold;
     text-decoration: underline;
 }
-
 
 ASIDE H3.badmsg
 {
@@ -170,6 +174,51 @@ HEADER NAV
 TABLE TR TD
 {
     padding: 0.5em;
+}
+
+TABLE TR TD:nth-child(1)
+{
+    width: 2%;
+}
+
+TABLE TR TD:nth-child(2)
+{
+    width: 15%;
+}
+
+TABLE TR TD:nth-child(3)
+{
+    width: 15%;
+}
+
+TABLE TR TD:nth-child(4)
+{
+    width: 15%;
+}
+
+TABLE TR TD:nth-child(5)
+{
+    width: 2%;
+}
+
+TABLE TR TD:nth-child(6)
+{
+    width: 6%;
+}
+
+TABLE TR TD:nth-child(7)
+{
+    width: 10%;
+}
+
+TABLE TR TD:nth-child(8)
+{
+    width: 15%;
+}
+
+TABLE TR TD:nth-child(9)
+{
+    width: 10%;
 }
 
 TABLE TR TD IMG
@@ -245,7 +294,7 @@ DIALOG#add,
 DIALOG#search,
 DIALOG#edit
 {
-    position: absolute;
+    position: fixed;
     top: 7em;
     background-color: white;
     margin-left: auto;

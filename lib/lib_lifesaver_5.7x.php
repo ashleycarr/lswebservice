@@ -49,13 +49,13 @@ function getClosestProfessionals($dbh, $lat, $lon, $maxResults)
         
         // If there are enough results to work with, use this range.
         $found = $sth->fetchColumn(0);
+                
+        if ($found > 0) {
+            $foundResults = true;
+        }
         
         if ($found >= $maxResults) {
             break;
-        }
-        
-        if ($found > 0) {
-            $foundResults = true;
         }
         
         // Otherwise, lets try doubling the search area.
