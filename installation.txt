@@ -1,0 +1,23 @@
+Installation
+
+Installation of the Lifesaver web service is completed in two main parts.
+
+Requirements:
+The Lifesaver web service requires an apache server with PHP and MySQL 5.5+ installed. 
+The service will perform much better however in environments with MySQL 7.0+ installed 
+due to the advanced geospatial and POSTGIS functions available.
+
+Uploading Application:
+This is a simple matter of extracting the application to a public folder available on 
+your server.
+
+Installing the MySQL Database, Tables and Users:
+Included with the package is a simple MySQL script called "webservice.sql". 
+This file contains all the required SQL commands to install the required
+database structure.
+
+Using an interface like PHPMyAdmin or the MySQL command line utilities with this
+script will allow you to install the required database structure. For example 
+type the following into the command line:
+
+ mysql -u username -p database_name < webservice.sql 
